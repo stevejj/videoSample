@@ -27,8 +27,9 @@
 - [x] 끝 프레임 v7 결과 확인 → 카메라 줌인/프레이밍 변화 자체는 성공(캐릭터 확대, 문/신발장 크롭됨). 하지만 **사용자 피드백으로 반려**: "나간다"는 서사를 줌인으로 대체하면 안 됨 — 캐릭터의 실제 이동/자세 변화로 표현해야 함. 접근 전환을 되돌리고, 카메라/줌은 완전히 고정한 채 **다리·발 위치를 문자 그대로 지정하는 구체적 포즈 묘사**로 v8 재작성
 - [x] v8 시도 전, 사용자가 구도 자체의 물리적 모순을 지적(문이 배경에 있으니 "정면 유지+전진"은 뒷걸음질을 요구하는 셈) → **뒷모습(back view)으로 전환**하여 v9 작성. v8은 시도하지 않고 폐기.
 - [x] 끝 프레임 v9 결과 확인 → 성공. 뒷모습 전환, 문 열림, 문턱 근처 위치, 배경/소품 일관성 모두 확인됨. **시작/끝 프레임 최종 확정.**
-- [x] 영상 연결 프롬프트(Veo 3.1 Lite) 컨셉 제안 → 사용자 승인(BGM 잔잔 + 효과음만, 대사/텍스트 없음) → 프롬프트 작성 완료
-- [ ] 사용자가 Flow(Veo 3.1 Lite)에서 8초 영상 생성 후 최종 결과 확인
+- [x] 영상 연결 프롬프트(Veo 3.1 Lite) 컨셉 제안 → 사용자 승인(BGM 잔잔 + 효과음만, 대사/텍스트 없음) → v1 프롬프트 작성 완료
+- [x] v1 영상 결과를 2fps로 프레임 분석 → 문 열림/닫힘 반복, 제자리걸음(실제 이동 없음), 소품(종이박스) 깜빡임 3가지 문제 발견 → "절대 하면 안 되는 것"을 명시하는 CRITICAL RULES 추가해 v2로 재작성
+- [ ] 사용자가 Flow(Veo 3.1 Lite)에서 v2 프롬프트로 8초 영상 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -194,9 +195,52 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite)
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v2)
 > **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문턱 근처에서 안정적으로 멈춤(끝 프레임과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
+> **v1 결과 분석(2fps 프레임 분석)**: (1) 문이 열렸다(1.5~4.5초)→거의 닫힘(5.0~5.5초)→다시 열림(6.0초~) 하며 왔다갔다함. (2) 3.0초에 뒤돈 이후 8초 끝까지 같은 자리에서 제자리걸음만 하고 실제 이동이 없음. (3) 4.0초에 종이박스 묶음이 사라졌다가 4.5초에 재등장. → 원인: 여러 단계(문 열기+뒤돌기+걷기+휘청임+멈춤)를 한 번에 요청한 게 Lite 모델엔 과했던 것으로 추정. v2는 "절대 하면 안 되는 것"을 명시적으로 못박아 단순화.
 
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home.
+
+Chang-su, a small fluffy 3D-pixar-style penguin character, starts facing
+the camera, holding a heavy load of recycling: a tied cardboard bundle
+with a mesh bag of cans hooked to it in one wing-flipper, a clear bag of
+PET bottles in the other. The front door in front of him is closed.
+
+In one single continuous motion, with no pauses, no reversals, and no
+repeated actions: he turns around away from the camera, pushing the door
+open with his body as he turns, and immediately begins walking steadily
+toward the open doorway. He keeps moving forward for the entire remainder
+of the clip, getting closer to the doorway with every second, until he
+reaches the threshold at the very end.
+
+CRITICAL RULES (do not violate these):
+- The door opens exactly once, early in the clip, and then stays open for
+  the rest of the video. It must never close again, even partially, at
+  any point after it opens.
+- Chang-su moves continuously forward toward the door for the entire
+  clip. He must never stand still, walk in place, or move backward —
+  there must be clear, steady progress toward the doorway in every second
+  of footage, from start to finish.
+- The two items (the cardboard-and-cans bundle, the PET bottle bag) stay
+  solid and continuously visible the entire time. They must not flicker,
+  disappear, change shape, or change which item is which.
+- Do not repeat, loop, hesitate, or reverse any part of the motion.
+
+His body leans/wobbles slightly side to side as he walks, working to keep
+his balance under the load — a natural, subtle wobble, not exaggerated.
+He never drops or spills anything.
+
+Motion should be natural and continuous, not exaggerated or cartoonish.
+
+Audio: gentle, soft background music throughout (calm, warm, understated
+mood). Light, realistic sound effects only — a door creak/click as it
+opens, soft footsteps, a faint rustle of the plastic bag and clinking
+cans. NO dialogue, NO voiceover, NO on-screen text or captions.
+```
+
+### v1 (참고용, 폐기)
 ```
 An 8-second continuous shot, camera completely static — no panning, no
 zooming, no cuts — fixed in the entryway of an ordinary home.
