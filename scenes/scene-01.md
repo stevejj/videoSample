@@ -39,7 +39,7 @@
 - [x] 영상 연결 프롬프트(Veo 3.1 Lite) v3 작성 — 최종 확정된 끝 프레임(더 멀리 나간 버전)에 맞춰 이동 거리 조정
 - [x] 사용자 요청으로 컨셉 대전환: 끝 프레임을 **캐릭터 없는 빈 현관(문 닫힘)**으로 변경 → 좌우/거리 문제 자체가 무의미해짐. v16 작성.
 - [ ] 끝 프레임을 v16 프롬프트로 재생성 후 결과 확인
-- [ ] **끝 프레임이 v16으로 확정되면 영상 연결 프롬프트도 전면 재작성 필요** (기존 v3는 "밖에 서있는 모습"이 도착점이었는데, v16은 "문 닫고 완전히 퇴장"이 도착점이라 스토리 구조 자체가 다름)
+- [x] 영상 연결 프롬프트를 v16 결말(문 닫힘)에 맞춰 v4로 재작성 — 등으로 문 밀기 + 도어클로저로 자동으로 문 닫힘 컨셉 반영
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -213,12 +213,62 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v3)
-> ⚠️ **재작성 필요**: 끝 프레임 컨셉이 v16(캐릭터 없는 빈 현관+문 닫힘)으로 바뀌어서, 이 v3는 더 이상 끝 프레임과 안 맞음. v16 결과 확인되면 "문 열고 나가서 다시 닫는다"까지 담는 새 버전으로 재작성 예정. 아래는 이전(v15 기준) 버전, 참고용으로 남겨둠.
-> **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문 밖으로 나가 난간 근처까지 멀리 이동(끝 프레임과 매칭, v2보다 훨씬 먼 거리). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
-> **v2 → v3 변경 이유**: v2 작성 후 실제 영상 테스트 전에 끝 프레임 자체를 더 멀리(문턱이 아니라 난간 근처까지) 나간 모습으로 다시 만들었음. 그래서 영상이 커버해야 할 이동 거리가 훨씬 커짐 — "문턱에서 멈춤"이 아니라 "화면에서 눈에 띄게 작아질 때까지 계속 걸어감"으로 수정. v2의 CRITICAL RULES(문 상태 고정, 지속 전진, 소품 깜빡임 금지, 반복/역행 금지)는 그대로 유지.
-> **소품 좌우**: 끝 프레임에서 Flow 편집 툴로 좌우를 직접 바꿨으므로, 영상 중간에 소품이 자연스럽게 좌우가 바뀌는 것도 정상 — 이 부분은 영상 프롬프트에서 별도로 신경 쓰지 않음.
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v4)
+> **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 걸어나가며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
+> **v3 → v4 변경 이유**: 끝 프레임 컨셉이 "밖에 서있는 모습"에서 "빈 현관+문 닫힘"으로 바뀌어서, 영상도 "문이 저절로 닫히며 캐릭터가 완전히 퇴장"하는 결말로 재작성. 문 위쪽에 원래 그려져 있던 도어클로저 장치(현관 이미지에 항상 있었음)를 활용해 "문이 자동으로 닫힌다"는 설정에 자연스러운 근거를 둠.
 
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home, facing the
+front door.
+
+Chang-su, a small fluffy 3D-pixar-style penguin character, starts facing
+the camera, holding a heavy load of recycling: a tied cardboard bundle
+with a mesh bag of cans hooked to it in one wing-flipper, a clear bag of
+PET bottles in the other. Both wings are completely full, so he cannot
+use them to open the door.
+
+In one single continuous motion, with no pauses, no reversals, and no
+repeated actions: he turns around and backs into the door, pushing it
+open with his back/body since his wings are full, struggling under the
+weight. Once the door is open, he continues walking forward and out
+through the doorway, gradually moving farther away from the camera and
+out of frame. The door has a self-closing hinge mechanism (the visible
+door closer arm at the top of the frame) — once he is no longer holding
+it open and has walked far enough away, the door swings shut on its own,
+arriving fully closed by the end of the clip. By the final moment,
+Chang-su is no longer visible anywhere in the frame — he has fully
+exited, and the door has closed behind him, leaving the entryway empty.
+
+CRITICAL RULES (do not violate these):
+- The door opens once, pushed by his back, and stays open only while he
+  is passing through it. Once he has moved far enough away, it must swing
+  shut ON ITS OWN via the self-closing mechanism, naturally near the end
+  of the clip — not an abrupt cut.
+- Chang-su moves continuously away from camera for the entire clip once
+  he starts walking. He must never stand still, walk in place, or move
+  backward toward camera, and he must fully exit the frame by the end.
+- The two items he carries stay solid and continuously visible while he
+  is on screen. They must not flicker, disappear, or change shape.
+- Do not repeat, loop, hesitate, or reverse any part of the motion.
+- The final 1-2 seconds must show the empty entryway with the door fully
+  closed and no character present — a calm, settled "aftermath" shot.
+
+His body leans/wobbles slightly side to side as he walks, working to keep
+his balance under the load — a natural, subtle wobble, not exaggerated.
+He never drops or spills anything.
+
+Motion should be natural and continuous, not exaggerated or cartoonish.
+
+Audio: gentle, soft background music throughout (calm, warm, understated
+mood). Light, realistic sound effects only — a soft effort/grunt sound as
+he pushes the door with his back, a door creak as it opens, footsteps
+fading as he walks away, and a soft door-closer click/thud as the door
+swings shut on its own near the end. NO dialogue, NO voiceover, NO
+on-screen text or captions.
+```
+
+### v3 (참고용, 끝 프레임 컨셉이 바뀌어서 폐기 — 실제 테스트도 안 됨)
 ```
 An 8-second continuous shot, camera completely static — no panning, no
 zooming, no cuts — fixed in the entryway of an ordinary home, looking
