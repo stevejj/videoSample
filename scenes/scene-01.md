@@ -32,7 +32,8 @@
 - [x] 사용자 피드백: 끝 프레임(v9)이 "문턱 근처"까지만이라 도착점이 약해서 영상이 끝까지 자연스럽게 안 이어짐 → 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 v10 재작성
 - [x] v10 시도 전, 사용자가 v9(=v10의 베이스) 자체의 물리 오류를 지적: 뒤돌았는데 소품 좌우가 정면일 때와 동일하게 유지됨(180도 회전이면 좌우가 바뀌어야 함) → 좌우 교정 지시를 추가해 v11로 재작성. v10은 시도하지 않고 폐기.
 - [x] 끝 프레임 v11 결과 확인 → 실패. 좌우 교정 지시를 명시했는데도 소품 위치가 그대로임(v9 베이스 이미지의 레이아웃에 앵커링된 것으로 추정) → **베이스를 v9가 아니라 확정된 시작 프레임(정면, 올바른 좌우)으로 되돌려서** 처음부터 다시 생성하는 방식으로 v12 재작성
-- [ ] 끝 프레임을 v12 프롬프트로 재생성 후 결과 확인
+- [x] 끝 프레임 v12 결과 확인 → 부분 실패. 좌우 여전히 안 바뀜(시작 프레임 베이스로 되돌려도 실패), "완전히 바깥으로 나감"도 미반영, 문턱 근처에서 또 멈춤 → 우선순위 분리: 거리는 "단일 요청 집중" 전략, 좌우는 "미러/flip" 개념으로 재시도하는 v13 작성
+- [ ] 끝 프레임을 v13 프롬프트로 재생성 후 결과 확인
 - [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -78,56 +79,51 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v12)
-> **v11 결과도 실패(사용자 확인)**: 좌우 교정을 명시했는데도 소품 위치가 안 바뀜. v9(이미 틀린 이미지)를 베이스로 "고쳐라"는 방식이 앵커링 때문에 잘 안 먹히는 것으로 판단. **베이스를 v9가 아니라 원래 확정된 시작 프레임(정면, 올바른 좌우)으로 되돌려서 처음부터 다시 생성**하는 방식으로 전환.
-> **첨부**: 캐릭터 참조 이미지 + **확정된 시작 프레임 이미지(정면, 문 닫힘)**를 베이스로 사용
+## ② 끝 프레임 (나노바나나 프롬프트, v13)
+> **v12 결과도 부분 실패(사용자 확인)**: 시작 프레임으로 베이스를 되돌렸는데도 좌우 여전히 안 바뀜, 그리고 "완전히 바깥으로 나감"도 반영 안 되고 문턱 근처에서 또 멈춤. **우선순위 분리**: (1) 거리(바깥으로 나감)는 예전에 성공했던 "단일 요청 집중" 전략으로 v12 결과물을 베이스로 재시도. (2) 좌우는 "물리적 설명"이 아니라 "미러/좌우반전(flip)"이라는 이미지 편집 개념으로 재시도. 이마저 안 되면 좌우는 포기하고 거리만 확정.
+> **첨부**: 캐릭터 참조 이미지 + **v12 결과물**(뒷모습, 문턱)을 베이스로 사용
 
 ```
-Using the second reference image (the confirmed front-facing start frame
-photo) as the base for character identity, colors, the room's background,
-and door design — but this is a full new photograph of a later moment in
-the same continuous scene, from the exact same fixed camera position.
+Using the second reference image (the latest photo) as the base — this is
+a full new photograph of a later moment, from the exact same fixed camera
+position.
 
-THE SCENE: Chang-su has turned 180 degrees to face away from the camera,
-pushed the door open, walked all the way through the doorway, and is now
-standing outside on the outdoor landing, past the threshold. He is seen
-from BEHIND — the back of his round head (dark navy-gray fur, no face
-visible), his back and rounded body. Because he is now outside and a
-little farther from camera, he appears somewhat smaller in the frame,
-framed by the doorway, with outdoor scenery (sky, railing, neighboring
-building) visible around him.
+REQUIRED CHANGE (the single most important change — must be large and
+unmistakable): Chang-su has walked further away from the camera, out
+through the doorway, and is now standing outside on the outdoor landing.
+He must appear noticeably smaller in the frame than in the base image —
+roughly half his current height — with the door frame taking up much more
+of the surrounding image, and more outdoor scenery (sky, railing,
+neighboring building, ground) visible around him. This must be an
+unmistakable distance change, not a subtle one.
 
-ITEM SIDES — READ CAREFULLY: In the base (front-facing) image, the
-cardboard-and-cans bundle is held in his RIGHT wing, which appears on
-screen-LEFT because he is facing the camera. The PET bottle bag is held
-in his LEFT wing, which appears on screen-RIGHT because he is facing the
-camera. Now that he has turned 180 degrees and we see him from behind, his
-RIGHT wing appears on screen-RIGHT, and his LEFT wing appears on
-screen-LEFT (the screen side flips because he rotated, not because the
-items moved wings). Therefore, in this new image:
-- The cardboard-and-cans bundle (his right wing) must be on screen-RIGHT.
-- The PET bottle bag (his left wing) must be on screen-LEFT.
-This is the opposite screen arrangement from the base image — do not copy
-the base image's left/right layout.
+SECONDARY CHANGE — MIRROR THE ITEM ARRANGEMENT: The item arrangement in
+this new image must be a left-right MIRROR (horizontal flip) of the base
+image. Whatever item is on screen-LEFT in the base image must be on
+screen-RIGHT in this new image, and whatever is on screen-RIGHT in the
+base image must be on screen-LEFT in this new image. Treat this as a
+horizontal-flip transform of the item layout, not a copy.
 
-His body is upright and steady — he has successfully made it outside
-without dropping anything. A settled, composed stance, task accomplished.
+Still seen from BEHIND, same character colors/fur texture, same two
+recycling items (cardboard-and-cans bundle, PET bottle bag) — nothing
+added or dropped, just repositioned per the mirror instruction above.
 
-KEEP IDENTICAL: camera position (fixed, do not move), interior
-entryway/door design and colors visible through the doorway, lighting
-mood, overall color tone, character's fur colors/texture.
+His body is upright and steady — task accomplished, no wobble.
 
-OTHER CONSTRAINTS:
-- Do not alter Chang-su's body proportions, colors, or fur texture from
-  the reference image.
-- Do not add any clothing, costume, accessories, or props on his body
-  beyond the two items already described.
-- No text, no logos, no watermark.
+KEEP IDENTICAL: camera position (fixed), overall lighting mood, color
+tone, character's fur colors/texture.
+
+OTHER CONSTRAINTS: no clothing/accessories added, no text/logo/watermark.
 ```
 
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v12 (끝 프레임) — 시작 프레임으로 베이스 리셋 → 좌우/거리 둘 다 여전히 실패
+- 결과: 베이스를 시작 프레임(정면, 올바른 좌우)으로 되돌리고 처음부터 다시 생성했는데도, 좌우는 정면과 동일하게 유지되고, "완전히 바깥으로 나감"도 반영 안 되어 문턱 근처에서 멈춤. 즉 v9(뒷모습 성공)와 사실상 거의 동일한 결과.
+- 교훈: 좌우 반전은 베이스를 바꿔도(v9 기반이든 시작 프레임 기반이든) 3번 연속 실패 → 나노바나나의 구조적 한계일 가능성이 높음. "물리적으로 설명"하는 방식(어느 날개인지, 왜 바뀌는지)이 잘 안 먹히므로, 다음엔 "미러/좌우반전(flip)"이라는 순수 이미지 편집 개념으로 재시도(v13). 거리 문제도 "정면 베이스에서 한 번에 다 바꾸기"보다, 예전에 성공했던 "직전 결과물을 베이스로 단일 변화만 강하게 요청"하는 방식으로 되돌아감.
+- 프롬프트 전체 텍스트: 위 v13 항목의 "v12 결과도 부분 실패..." 참고, 또는 이전 대화 기록 참고.
 
 ### v11 (끝 프레임) — v9를 베이스로 좌우 교정 지시 → 반영 안 됨
 - 결과: "화면 좌우가 바뀌어야 한다"고 명시적으로 설명했는데도 소품 위치가 v9와 동일하게 유지됨.
