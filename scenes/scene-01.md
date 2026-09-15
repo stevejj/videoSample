@@ -50,8 +50,9 @@
 - [x] v11 영상 결과를 2fps로 프레임 분석 → 몸 방향 논리 자체는 문제없었으나 **실행 타이밍이 드리프트**: (1) "1s-2s 정면 유지"가 지켜지지 않고 1s부터 이미 옆모습으로 돌아가버려 등으로 미는 장면 자체가 제대로 안 잡힘, (2) 3s에 회전은 했지만 3~4.5초 구간이 "매초 이동" 규칙에도 불구하고 거의 정지 상태로 렌더링되어 문턱을 못 넘고 안쪽에 머무름(사용자 피드백과 일치) → 추상적 "매초 이동" 규칙 대신 도어매트/문턱/난간 같은 **구체적 랜드마크에 위치를 고정**하고, 회전 전 구간에 "프로필 금지" 부정 제약을 추가한 v12 재작성
 - [x] 사용자가 생성 방식을 "시작/끝 프레임(Frames to Video)"에서 **"소재(Ingredients to Video)"**로 전환 결정 → v12는 테스트 전에 폐기, 참조 이미지 역할을 명시하는 구조로 v13 재작성
 - [x] 소재 모드 전환 중 확정 그리드(v5)를 재검토 → **1초 패널이 물리적으로 모순된 구버전 로직("이미 뒤돈 채 등으로 밀기")을 담고 있음을 발견**(v9→v11 사이에 고친 것과 동일 버그). 소재 모드에서는 그리드가 직접 참조 이미지로 들어가 텍스트 지시보다 강하게 작용할 수 있어 위험 → 고쳐진 로직(1s-2s 정면 유지, 3s 1회 회전)에 맞춘 그리드 v6 작성, 재생성 필요
-- [ ] 그리드를 v6 프롬프트로 재생성 후 결과 확인
-- [ ] 영상을 v13 프롬프트(소재 모드, 참조 이미지 3장: 시작/끝 프레임 + 그리드 v6)로 생성 후 결과 확인
+- [x] 그리드를 v6 프롬프트로 재생성 후 결과 확인 → 다수 실패: 1초에 또 조기 회전(v5와 동일 버그), 2초에 문 손상 텍스처 재발 + 문 덜 열림, 3~4초 카메라 흔들림, 5초에 갑자기 클로즈업 정면샷, 문밖 풍경 전 패널 미표시 → 부정 제약에 긍정 묘사(눈/부리 명시, 카메라 고정 앵커, "문은 손상되지 않는다" 명시)를 추가한 v7로 재작성
+- [ ] 그리드를 v7 프롬프트로 재생성 후 결과 확인
+- [ ] 영상을 v13 프롬프트(소재 모드, 참조 이미지 3장: 시작/끝 프레임 + 확정된 그리드)로 생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -302,7 +303,8 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-> **그리드 v5는 물리적으로 모순된 구버전 로직을 담고 있음 — 소재(Ingredients) 모드 전환 전 v6로 재생성 필요**: v5 그리드의 1초 패널은 "이미 뒤돈 상태(등이 카메라 쪽)로 등으로 민다"로 만들어졌는데, 이는 이후 영상 프롬프트 작업 중(v9→v11) 발견한 물리적 모순(뒤돈 순간 정면이 문을 향하게 되어 등으로 미는 게 불가능)과 동일한 버그다. 그리드가 사람이 눈으로 확인하는 용도로만 쓰일 때는 문제가 드러나지 않았지만, **"소재" 모드에서는 그리드 이미지 자체가 영상 생성에 직접 참조 이미지로 들어가므로**, 텍스트 프롬프트가 "정면 유지"라고 명시해도 참조 이미지가 보여주는 구버전 자세(조기 회전)로 끌려갈 위험이 큼("참조 이미지가 텍스트 지시보다 강함" — 소품 좌우 반전 실패 사례 참고). 영상 프롬프트(v12)에서 이미 고친 로직(1s-2s 정면 유지, 3s에 딱 한 번 회전 + 랜드마크 체크포인트)에 맞춰 그리드도 다시 만들어야 함.
+> **그리드 v6 결과 확인(사용자) → 다수 실패**: (1) 1초에 "정면 유지, 프로필/뒷모습 금지"를 명시했는데도 또 뒷모습으로 조기 회전(v5와 동일한 버그 재발), (2) 2초에 "crack" 단어를 아예 안 썼는데도 문에 금 간 텍스처가 다시 생기고 문도 완전히 안 열림, (3) 3~4초 구간에서 캐릭터 크기/구도가 패널마다 달라짐(고정 카메라 위반), (4) 5초에 캐릭터가 갑자기 다시 정면을 보며 클로즈업됨(뒷모습 유지 규칙 완전히 깨짐), (5) 문 밖 풍경(하늘/난간)이 전 패널에서 한 번도 안 보임(문이 제대로 안 열려서로 추정). **원인 추정**: 부정 제약("~하면 안 된다")만으로는 나노바나나가 여전히 "힘줘 밀기=이미 돌아선 자세", "세게 밀기=손상 텍스처"라는 관성적 연상으로 그려버림. 카메라 고정도 매 패널을 사실상 새로 그리는 과정에서 계속 흔들림.
+> **v7 수정**: 부정 제약에 더해 **구체적인 긍정 묘사(눈/부리가 보인다는 신체 디테일, 배경 앵커 요소 크기 고정)**를 추가로 못박고, "힘주어 민다"는 표현이 손상 연상을 유발하는 것으로 보여 **문은 손상되지 않고 정상적으로 열리는 것이라는 문장을 별도로 추가**.
 
 ```
 Using the three reference images — the first is Chang-su's character
@@ -322,44 +324,62 @@ Panel order and timing:
 Each panel shows a small, clearly readable number label in one corner
 ("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
 
+CAMERA LOCK (applies to every single panel, no exceptions): the camera
+framing, distance, angle, and zoom level are IDENTICAL in all 8 panels —
+exactly matching panel 0s. The shoe rack, the doormat, and the door frame
+must appear at the exact same size, scale, and position in every panel
+without exception. Do not let the shot zoom in, zoom out, crop tighter, or
+shift at any point across the 8 panels — only Chang-su's pose and position
+change, never the camera.
+
 Panel 0s must match the start reference image exactly. Panel 7s should be
 close to the end reference image. In every panel, the character's face, fur
 color/texture, and proportions must match the character reference image —
 do not let appearance drift across panels. The panels in between should
 show a plausible, smoothly progressing sequence of this motion:
 - 0s: Chang-su faces the camera, holding the recycling load, door closed.
-  His torso and face point straight at the camera.
-- 1s (MOST IMPORTANT MOMENT): he is STILL fully facing the camera — no
-  turning, no profile, no 3/4 angle. He has stepped backward so his back
-  presses against the door, and is leaning his whole body weight back,
-  pushing hard against the door with his back, straining, legs pushing
-  against the floor for leverage. His face is still toward the camera
-  (his head may tilt down slightly with visible effort, but his torso
-  does not rotate). He must NOT be shown in profile or back-view here —
-  showing him already turned around at this point is a failure state.
-- 2s: he is STILL fully facing the camera, same orientation as 1s — no
-  rotation yet. The push has finished and the door has swung open,
-  already fully open by this panel. The door itself is completely
-  undamaged and unmarked, simply opening on its hinge like normal; it
-  must NOT show any cracks, fractures, or damage of any kind.
+  His torso and face point straight at the camera, both eyes and his beak
+  clearly visible.
+- 1s (MOST IMPORTANT MOMENT): his full face — both eyes, his beak, the
+  front of his head — is STILL clearly visible facing the camera, exactly
+  as in panel 0s. He has stepped backward so his back presses against the
+  door, and is leaning back at an angle, belly and chest still tilted
+  toward the camera, feet braced forward on the floor for leverage. Only
+  the crown/back of his head being visible, or any part of his back being
+  shown facing the camera, is a failure state for this panel — his eyes
+  and beak must be the clearest features in frame, same as 0s.
+- 2s: his full face is STILL clearly visible facing the camera, same as 1s
+  — no rotation yet, eyes and beak still the clearest features. The door
+  has now swung fully open next to him. The door is NOT damaged by this —
+  it simply unlatches and swings open normally, exactly like any ordinary
+  working door; its surface is perfectly smooth and flat, identical brown
+  paint to panel 0s, with absolutely no lines, cracks, scratches, splits,
+  or damage of any kind, even faintly.
 - 3s: NOW, for the first time, he has turned around so his back fully
   faces the camera, and his leading foot is already past the door's
-  threshold line, stepping onto the outdoor landing. Face NOT visible
-  from this point on. Still carrying the exact same two items, clearly
-  visible in his wings.
+  threshold line, stepping onto the outdoor landing, which is now clearly
+  visible beyond the open doorway (sky, railing, greenery). Face NOT
+  visible from this point on. Still carrying the exact same two items,
+  clearly visible in his wings.
 - 4s: he is now clearly on the outdoor landing, roughly at the depth of
-  the railing, walking forward. Still seen from BEHIND, face NOT visible,
-  still carrying the same two items.
+  the railing, walking forward, outdoor scenery clearly visible around
+  him. Still seen from BEHIND, face NOT visible, still carrying the same
+  two items. He must be noticeably smaller/farther than the character
+  reference's close-up scale, at the same camera distance as every other
+  panel (see CAMERA LOCK above) — not a close-up crop.
 - 5s: Still seen from BEHIND — his face is NOT visible, his back is still
-  fully to the camera (do not let him face camera again). He is
-  continuing to walk with his path curving toward screen-RIGHT, now past
-  the railing's midpoint, positioned off-center toward the right side of
-  the frame. Still carrying the same two items.
+  fully to the camera (do not let him face camera again, and do not
+  render this panel as a close-up). He is continuing to walk with his
+  path curving toward screen-RIGHT, now past the railing's midpoint,
+  positioned off-center toward the right side of the frame, similar in
+  size to panel 4s or slightly smaller (farther away), never larger or
+  closer than 4s. Still carrying the same two items.
 - 6s: Still seen from BEHIND, face NOT visible. He is almost completely
   exited — MORE THAN HALF of his body is already cropped off by the right
   edge of the frame, only a small portion (part of his back/head) still
-  visible, still carrying what's visible of the two items. The door is
-  STILL OPEN at this point — it has not started closing yet.
+  visible, still carrying what's visible of the two items. Outdoor
+  scenery still visible through the doorway. The door is STILL OPEN at
+  this point — it has not started closing yet.
 - 7s: he is completely gone from frame — no part of him visible anywhere.
   Only now does the door swing fully shut on its own, matching the end
   reference image exactly.
@@ -369,20 +389,28 @@ The 3s → 4s → 5s → 6s → 7s stretch is one single, continuous, natural ex
 continuation of the one before it: his position, stride, and how much of
 him is cropped by the frame edge should progress smoothly and believably.
 Avoid any panel-to-panel jump that looks like a cut or a teleport, and
-avoid any panel where he suddenly faces the camera again — once he turns
-at 3s, his back stays to the camera for every remaining panel until he is
-fully gone. Likewise, avoid any panel before 3s where he appears turned or
-in profile — before 3s he is always fully front-facing, only his posture
-changes (standing, then leaning/straining into the push). Imagine this as
+avoid any panel where he suddenly faces the camera again or appears as a
+close-up — once he turns at 3s, his back stays to the camera and his
+apparent size stays consistent with the fixed camera distance for every
+remaining panel until he is fully gone. Likewise, avoid any panel before
+3s where he appears turned or in profile — before 3s he is always fully
+front-facing with his eyes and beak clearly visible, only his posture
+changes (standing, then leaning back into the push). Imagine this as
 flipping through consecutive frames of one real sequence, not picking
 unrelated moments.
 
 Camera position/framing, background, and character design must stay
 consistent across all 8 panels — this is one continuous scene, not 8
-separate images. Thin white borders/gutters between panels are fine so they
-don't blend together.
+separate images (see CAMERA LOCK above). Thin white borders/gutters
+between panels are fine so they don't blend together.
 
 No other text, logos, or watermarks besides the second-number labels.
+```
+
+### v6 그리드 (참고용, 실패 — 조기 회전/문 손상/카메라 흔들림/5초 클로즈업 재발)
+> 실패 상세는 위 v7 항목의 "그리드 v6 결과 확인" 참고. v5와 같은 조기 회전 버그가 부정 제약만으로는 안 고쳐졌고, 새로 카메라 흔들림·5초 클로즈업 문제까지 추가로 발견됨.
+```
+(v6 그리드 프롬프트 전체 텍스트는 위 v7 항목 직전, 이 파일의 git 히스토리 참고)
 ```
 
 ### v5 그리드 (참고용, 사용자 확인 완료했으나 이후 물리적 모순 발견되어 v6로 대체 필요)

@@ -208,6 +208,22 @@ on scene 1's grid — check for these any time a grid has more than 2-3 panels):
   or "the door is STILL OPEN at this point — it has not started closing
   yet." Just describing the desired state isn't as reliable as also naming
   the specific wrong outcome and forbidding it.
+- **A negative constraint alone can still lose to the model's own
+  association for a situation, even when it's specific and unambiguous.**
+  Scene 1 hit this twice on the same grid: "he must NOT be shown in
+  profile or back-view" at the push beat still produced an early turn, and
+  a separate "must NOT show cracks, fractures, or damage" (with the word
+  "crack" removed entirely this time) still produced damage texture on the
+  door during the hard-push beat. In both cases the model seems to
+  associate "pushing hard against something" with "already turned away" or
+  "causing damage," independent of what the text forbids. Fix: add a
+  concrete positive description of the specific feature that must remain
+  visible/intact — "both eyes and his beak must be clearly visible, same
+  as the opening panel" rather than just "don't show his back"; "the
+  surface is identical smooth brown paint, matching the closed-door panel
+  exactly" rather than just "no cracks." A camera-framing anchor works the
+  same way: "the shoe rack and door frame must be the same size and
+  position in every panel" holds better than "the camera stays fixed."
 
 ## Prompt-writing patterns worth reusing
 
