@@ -42,7 +42,8 @@
 - [x] 영상 연결 프롬프트를 v16 결말(문 닫힘)에 맞춰 v4로 재작성 — 등으로 문 밀기 + 도어클로저로 자동으로 문 닫힘 컨셉 반영
 - [x] v5 영상 결과를 2fps로 프레임 분석 → 심각한 렌더링 붕괴 다수 발견. 처음엔 "단계가 너무 많다"고 판단했으나, 사용자 지적으로 재검토하여 **구체적 원인 3가지**를 찾음: (1) "turns toward screen-RIGHT"의 "turns"가 몸 재회전으로 오독됨, (2) 문이 열린 상태의 참조 이미지가 없어서 디자인이 매번 다르게 그려짐, (3) 문 닫힘 타이밍이 캐릭터 퇴장과 연동 안 됨. 세 가지 다 교정하여 v6 재작성.
 - [x] v6 시도 전, 사용자가 두 가지 추가 지적: 문이 바깥쪽으로 열려야 함(안쪽으로 열리는 것처럼 보임), 문 밖 풍경에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 바깥으로 열리고, 문 밖은 순수 야외 배경만 보이도록 명시하는 v7 재작성
-- [ ] 영상을 v7 프롬프트로 재생성 후 결과 확인
+- [x] v7 시도 전, 사용자가 "등으로 힘겹게 밀어서 여는 것"이 씬의 핵심 포인트인데 다른 규칙들 사이에 묻혔다고 지적 → 이 동작을 프롬프트 최상단에 "MOST IMPORTANT MOMENT"로 분리하고 구체적 신체 동작으로 생생하게 묘사하는 v8 재작성
+- [ ] 영상을 v8 프롬프트로 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -216,7 +217,8 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v7)
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v8)
+> **v7 → v8 변경 이유(사용자 지적)**: "등으로 문을 힘겹게 밀어서 여는 것"이 이 씬의 핵심 포인트인데, CRITICAL RULES 등 다른 세부 규칙들 사이에 묻혀서 강조가 부족했음 → 이 동작을 프롬프트 최상단에 **가장 중요한 순간(MOST IMPORTANT MOMENT)**으로 분리해서 구체적인 신체 동작(온 몸을 뒤로 기대어 밀기, 다리로 바닥을 밀어내기, 문이 살짝 버티다가 밀려 열림 등)으로 생생하게 묘사.
 > **v6 → v7 변경 이유(사용자 지적)**: 문이 바깥쪽으로 열려야 하는데 그렇지 않았고, 문 열렸을 때 바깥 풍경 안에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 확실히 바깥 방향으로 열리고, 문 밖은 순수한 야외 배경(하늘/바닥/난간/나무 등)만 보이도록 명시.
 > **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 나가서 **오른쪽 방향으로 이동**하며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
 > **v4 → v5 변경 이유**: 사용자 요청으로 퇴장 방향을 **오른쪽**으로 명시.
@@ -246,13 +248,19 @@ with a mesh bag of cans hooked to it in one wing-flipper, a clear bag of
 PET bottles in the other. Both wings are completely full, so he cannot
 use them to open the door.
 
-In one single continuous motion, with no pauses, no reversals, and no
-repeated actions: he turns around once (his back now fully and
-permanently facing the camera) and backs into the door, pushing it open
-with his back/body since his wings are full, struggling under the weight.
-Once the door is open, he continues walking forward through the doorway
-and out. Without rotating his body or facing the camera again at any
-point, he simply angles his walking path so that he moves toward
+MOST IMPORTANT MOMENT (this is the emotional core of the clip — give it
+real weight and screen time, do not rush through it): He turns around so
+his back faces the door, then leans his whole body weight backward and
+pushes against the door with his back, straining hard. His stubby legs
+push against the floor for leverage, his body visibly trembling with
+effort. The door resists for a moment — it does not fly open instantly —
+before finally giving way and swinging open under his sustained push.
+This is a genuine struggle, not a quick or easy motion: he is visibly
+working hard, fighting the weight of his load and the door together.
+
+Once the door has swung open, he continues walking forward through the
+doorway and out. Without rotating his body or facing the camera again at
+any point, he simply angles his walking path so that he moves toward
 screen-RIGHT while still walking with his back to the camera the entire
 time — think of it as steering while walking, not turning around. He
 keeps moving away from camera and toward screen-right until he is
@@ -278,6 +286,9 @@ of the clip. The door closing must not begin while any part of Chang-su
 is still visible.
 
 CRITICAL RULES (do not violate these):
+- The door-push struggle is the most important beat of this clip — it
+  must be clearly visible, unhurried, and take real time (roughly 2-3
+  seconds of the 8-second clip). Do not skip, rush, or shorten it.
 - Chang-su turns his body only ONCE, near the beginning, to face away
   from camera. After that single turn, he must NEVER face the camera
   again and must NEVER rotate his body for the rest of the clip — only
