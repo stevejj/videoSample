@@ -34,7 +34,8 @@
 - [x] 끝 프레임 v11 결과 확인 → 실패. 좌우 교정 지시를 명시했는데도 소품 위치가 그대로임(v9 베이스 이미지의 레이아웃에 앵커링된 것으로 추정) → **베이스를 v9가 아니라 확정된 시작 프레임(정면, 올바른 좌우)으로 되돌려서** 처음부터 다시 생성하는 방식으로 v12 재작성
 - [x] 끝 프레임 v12 결과 확인 → 부분 실패. 좌우 여전히 안 바뀜(시작 프레임 베이스로 되돌려도 실패), "완전히 바깥으로 나감"도 미반영, 문턱 근처에서 또 멈춤 → 우선순위 분리: 거리는 "단일 요청 집중" 전략, 좌우는 "미러/flip" 개념으로 재시도하는 v13 작성
 - [x] 끝 프레임 v13 결과 확인 → 좌우 문제 지속(사용자 확인). 4번째 접근도 실패 → 이전 생성물을 베이스로 쓰는 것 자체가 원인일 수 있다고 판단, **최초 턴어라운드 시트(뒷모습 포함)만 참조해 이전 생성물 없이 완전히 새로 생성**하는 v14 작성
-- [ ] 끝 프레임을 v14 프롬프트로 재생성 후 결과 확인
+- [x] v14 시도 전, 사용자가 영상 결과를 보고 방향 전환: 좌우 반전은 억지로 맞추지 않아도 될 것 같다고 판단 → **"확실히 밖으로 나가있기"에만 집중**하고 소품 "배치 유지" 문구도 제거한 v15로 재작성. v14는 시도하지 않고 폐기.
+- [ ] 끝 프레임을 v15 프롬프트로 재생성 후 결과 확인
 - [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -80,37 +81,42 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v14)
-> **v13도 동일 문제 지속(사용자 확인)**: 좌우가 여전히 안 바뀜. v9/v11(틀린 이미지 베이스)/v12(시작 프레임 베이스, 전체 재생성)/v13(미러 개념 프레이밍) 네 가지 다른 접근이 모두 실패 — 이전 생성물을 베이스로 계속 사용하는 것 자체가 좌우 배치를 답습하게 만드는 원인일 수 있다고 판단. **이번엔 이전 생성물을 아예 베이스로 쓰지 않고**, 최초 업로드된 캐릭터 턴어라운드 시트(뒷모습 포함)만 참조해서 완전히 새로 생성.
-> **첨부**: **캐릭터 턴어라운드 시트 이미지**(최초 업로드, 정면/3-4/측면/뒷모습 4방향 나온 팽창수용 이미지) **1장만**. 이전 생성물(v9~v13)은 이번엔 첨부하지 않음.
+## ② 끝 프레임 (나노바나나 프롬프트, v15)
+> **좌우 반전은 보류(사용자 결정)**: 영상 결과를 보니 이 정도면 괜찮을 것 같다고 판단, 좌우를 억지로 맞추는 시도는 중단하고 **"확실히 밖으로 나가있기"에만 집중**. 추가로 발견한 점: 이전 프롬프트들에서 소품에 대해 "same relative arrangement(배치 유지)"라는 문구를 다른 곳에 같이 넣었었는데, 이게 "좌우를 바꿔라"는 지시와 모순되어 혼란을 줬을 수 있음 → 이번엔 소품 배치에 "유지하라"는 말을 넣지 않고 자연스럽게 두기로 함.
+> **첨부**: 캐릭터 참조 이미지 + **확정된 시작 프레임 이미지**(정면, 문 닫힘) 2장
 
 ```
-Using the reference image (the character turnaround sheet showing front,
-3/4, side, and back views) — specifically matching the BACK VIEW pose
-shown in that sheet for Chang-su's head/body shape from behind — generate
-a brand new vertical 9:16 image. Do not base this on any other previous
-image; treat this as a fresh generation guided only by this turnaround
-reference and the description below.
+Using the second reference image (the confirmed front-facing start frame
+photo) for character identity, colors, fur texture, and the room/door
+design — but this is a full new photograph of a later moment in the same
+continuous scene, from the exact same fixed camera position.
 
-THE SCENE: Chang-su, seen from behind (matching the back-view reference),
-is standing outside on an outdoor landing/walkway, having just walked out
-through an open front door of a home. The open door and entryway interior
-are visible behind him. He is carrying two items:
-- On screen-RIGHT: a flat bundle of tied cardboard boxes with a small mesh
-  bag of aluminum cans hooked to it.
-- On screen-LEFT: a clear plastic bag full of empty PET bottles.
+THE SCENE: Chang-su has turned around, pushed the door open, and walked
+all the way outside — he is now standing on the outdoor landing, both
+feet past the door threshold. He is seen from BEHIND: the back of his
+round head (dark navy-gray fur, no face visible), his back and rounded
+body.
 
-He appears at a middle distance — not filling the whole frame, with the
-doorway and some surrounding wall visible, plus a hint of outdoor scenery
-(sky, railing, neighboring building) around him.
+REQUIRED CHANGE — HE MUST BE CLEARLY OUTSIDE (the most important part,
+must be unmistakable): He is noticeably smaller in the frame than he
+would be if he had just turned around near the doorway — roughly half the
+height he'd appear if still standing just inside. The door frame surrounds
+him from a moderate distance, and a good amount of outdoor scenery (sky,
+railing, neighboring building, ground) is visible around him, more than
+just a sliver. If this looks like he only took one step past the door,
+that is NOT far enough — he should look like he walked several steps out
+onto the landing.
 
-His body is upright and steady, a settled composed stance, task
+He is still carrying the same two items he had in the base image: the
+tied cardboard bundle with the mesh bag of cans hooked to it, and the
+clear bag of PET bottles — nothing added or dropped.
+
+His body is upright and steady, a settled composed stance — task
 accomplished, no wobble.
 
-Background/lighting: an ordinary home entryway as seen through the open
-doorway (beige walls, brown door, warm indoor lighting) with bright
-daylight outside. Same fluffy 3D pixar-style character design, same fur
-colors and texture as the reference.
+KEEP IDENTICAL: camera position (fixed, do not move), interior
+entryway/door design and colors seen through the doorway, lighting mood,
+overall color tone, character's fur colors and texture.
 
 OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
@@ -123,6 +129,10 @@ OTHER CONSTRAINTS:
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v14 (끝 프레임) — 턴어라운드 시트만으로 새로 생성 (시도 전 폐기)
+- 좌우 반전을 여전히 노려서 설계했었으나, 실제 영상 결과를 보고 사용자가 "이 정도면 괜찮다"고 판단 → 좌우는 보류하고 거리(확실히 밖으로 나가있기)에만 집중하는 v15로 방향 전환. v14는 시도하지 않음.
+- 참고로 남겨둔 인사이트: 소품에 대해 "same relative arrangement(배치 유지)" 같은 문구를 다른 요구사항(좌우 반전 등)과 함께 쓰면 서로 모순되는 지시가 되어 혼란을 줄 수 있음 — 이후 프롬프트에서는 유지할 필요 없는 속성에 "유지하라"는 말을 넣지 않도록 주의.
 
 ### v13 (끝 프레임) — 미러/flip 개념으로 재프레이밍 → 좌우 문제 지속
 - 결과: "물리적 설명"에서 "미러/좌우반전"이라는 이미지 편집 용어로 바꿔봤지만 여전히 좌우가 안 바뀜(사용자 확인).
