@@ -59,17 +59,30 @@ other way around.
    same" language, so isolate what must change from what must stay identical.
 5. **Verify both frames against the checklist in README.md** before handing
    them to the user, and again after they generate them and share the result.
-6. **Once both frames are confirmed, ask the user whether to generate a
-   storyboard-grid check before writing the video prompt.** Don't just do
-   this automatically — always ask first. The point is that Nano Banana
-   (images) costs no Flow credits but Veo (video) does, so a free intermediate
-   sanity check catches a bad motion plan before it burns a paid generation.
-   If they say yes, write a storyboard-grid prompt (see "Storyboard grid" below)
-   attaching both confirmed frames as references, have them generate it, and
-   review it together. Iterate on the grid (not the actual video prompt yet)
-   until the per-second progression looks right — same iteration mindset as
-   the frames themselves.
-7. **Write the video-connect prompt (Veo 3.1 Lite) from the confirmed
+6. **Before generating anything that describes motion (a storyboard grid or
+   a video-connect prompt), self-check it for body-orientation feasibility
+   and show that check to the user — this costs zero Flow credits, it's pure
+   reading.** Write out a short per-timestamp table: what direction the
+   character's front/back faces, and whether the described action at that
+   moment is physically possible given that orientation (see the scene-01
+   door-push contradiction in step 2 above for the exact kind of bug this
+   catches). Do this BEFORE spending the user's time on a grid generation,
+   not just before the video prompt — a flawed motion plan produces a
+   flawed grid too, so catching it earlier saves a full round-trip. Only
+   after this check comes back clean should the grid or video prompt
+   actually be written/sent.
+7. **Once both frames are confirmed (and the orientation check above is
+   clean), ask the user whether to generate a storyboard-grid check before
+   writing the video prompt.** Don't just do this automatically — always
+   ask first. The point is that Nano Banana (images) costs no Flow credits
+   but Veo (video) does, so a free intermediate sanity check catches a bad
+   motion plan before it burns a paid generation. If they say yes, write a
+   storyboard-grid prompt (see "Storyboard grid" below) attaching both
+   confirmed frames as references, have them generate it, and review it
+   together. Iterate on the grid (not the actual video prompt yet) until
+   the per-second progression looks right — same iteration mindset as the
+   frames themselves.
+8. **Write the video-connect prompt (Veo 3.1 Lite) from the confirmed
    storyboard grid**, not from scratch. Once the grid looks right, the beats
    in the motion prompt should describe what's actually in each panel — the
    grid is now the validated spec for what happens second by second, so lean
@@ -81,7 +94,7 @@ other way around.
    into a list of rules. State hard constraints as CRITICAL RULES, phrased as
    conditions ("X only happens after Y is 100% true"), not as time cues
    ("near the end").
-8. **After the user shares the generated .mp4, extract frames at ~2fps and
+9. **After the user shares the generated .mp4, extract frames at ~2fps and
    inspect every one before judging the result** — don't just skim the first
    and last frame. See "Verifying a generated video" below for the exact
    commands. Report findings with timestamps, then decide whether the
