@@ -31,7 +31,8 @@
 - [x] v1 영상 결과를 2fps로 프레임 분석 → 문 열림/닫힘 반복, 제자리걸음(실제 이동 없음), 소품(종이박스) 깜빡임 3가지 문제 발견 → "절대 하면 안 되는 것"을 명시하는 CRITICAL RULES 추가해 v2로 재작성
 - [x] 사용자 피드백: 끝 프레임(v9)이 "문턱 근처"까지만이라 도착점이 약해서 영상이 끝까지 자연스럽게 안 이어짐 → 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 v10 재작성
 - [x] v10 시도 전, 사용자가 v9(=v10의 베이스) 자체의 물리 오류를 지적: 뒤돌았는데 소품 좌우가 정면일 때와 동일하게 유지됨(180도 회전이면 좌우가 바뀌어야 함) → 좌우 교정 지시를 추가해 v11로 재작성. v10은 시도하지 않고 폐기.
-- [ ] 끝 프레임을 v11 프롬프트로 재생성 후 결과 확인
+- [x] 끝 프레임 v11 결과 확인 → 실패. 좌우 교정 지시를 명시했는데도 소품 위치가 그대로임(v9 베이스 이미지의 레이아웃에 앵커링된 것으로 추정) → **베이스를 v9가 아니라 확정된 시작 프레임(정면, 올바른 좌우)으로 되돌려서** 처음부터 다시 생성하는 방식으로 v12 재작성
+- [ ] 끝 프레임을 v12 프롬프트로 재생성 후 결과 확인
 - [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -77,42 +78,44 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v11)
-> **v9/v10에서 발견된 물리 오류(사용자 지적)**: 정면일 때 화면 기준 왼쪽=종이박스+캔, 오른쪽=페트병이었는데, 뒤돌았는데도 나노바나나가 화면상 좌우를 그대로 복사해버림. 180도 회전하면 카메라 기준 좌우가 뒤바뀌는 게 물리적으로 맞음(오른쪽 날개 소품 → 뒤돌면 화면 오른쪽, 왼쪽 날개 소품 → 화면 왼쪽). v11은 이 좌우 교정을 명시적으로 지정.
-> **첨부**: 캐릭터 참조 이미지 + v9 결과물(뒷모습, 문턱 근처 이미지)을 베이스로 사용
+## ② 끝 프레임 (나노바나나 프롬프트, v12)
+> **v11 결과도 실패(사용자 확인)**: 좌우 교정을 명시했는데도 소품 위치가 안 바뀜. v9(이미 틀린 이미지)를 베이스로 "고쳐라"는 방식이 앵커링 때문에 잘 안 먹히는 것으로 판단. **베이스를 v9가 아니라 원래 확정된 시작 프레임(정면, 올바른 좌우)으로 되돌려서 처음부터 다시 생성**하는 방식으로 전환.
+> **첨부**: 캐릭터 참조 이미지 + **확정된 시작 프레임 이미지(정면, 문 닫힘)**를 베이스로 사용
 
 ```
-Using the second reference image (the v9 photo) as the base for character
-identity, colors, and the room/door style — but this is a new photograph
-with two corrections applied, capturing a moment slightly later.
+Using the second reference image (the confirmed front-facing start frame
+photo) as the base for character identity, colors, the room's background,
+and door design — but this is a full new photograph of a later moment in
+the same continuous scene, from the exact same fixed camera position.
 
-CORRECTION — ITEM SIDES (important, the base image has this wrong): When
-Chang-su was facing the camera, the cardboard-and-cans bundle was on
-screen-LEFT and the PET bottle bag was on screen-RIGHT. Since he has
-turned 180 degrees to face away from camera, the screen sides must swap:
-the cardboard-and-cans bundle must now appear on screen-RIGHT, and the
-PET bottle bag must now appear on screen-LEFT. (The base image incorrectly
-kept them on the same screen sides as the front view — fix this.)
+THE SCENE: Chang-su has turned 180 degrees to face away from the camera,
+pushed the door open, walked all the way through the doorway, and is now
+standing outside on the outdoor landing, past the threshold. He is seen
+from BEHIND — the back of his round head (dark navy-gray fur, no face
+visible), his back and rounded body. Because he is now outside and a
+little farther from camera, he appears somewhat smaller in the frame,
+framed by the doorway, with outdoor scenery (sky, railing, neighboring
+building) visible around him.
 
-REQUIRED CHANGE — FURTHER OUTSIDE (must be clear and unmistakable): He is
-now fully outside the house — both feet past the door threshold, standing
-on the outdoor landing beyond it. Because he is now framed by the doorway
-itself and a little farther from camera, he appears somewhat smaller in
-the frame than in the base image, with more of the door frame and
-interior wall visible around him, and more of the outdoor scenery (sky,
-railing, neighboring building) visible beyond/around him.
+ITEM SIDES — READ CAREFULLY: In the base (front-facing) image, the
+cardboard-and-cans bundle is held in his RIGHT wing, which appears on
+screen-LEFT because he is facing the camera. The PET bottle bag is held
+in his LEFT wing, which appears on screen-RIGHT because he is facing the
+camera. Now that he has turned 180 degrees and we see him from behind, his
+RIGHT wing appears on screen-RIGHT, and his LEFT wing appears on
+screen-LEFT (the screen side flips because he rotated, not because the
+items moved wings). Therefore, in this new image:
+- The cardboard-and-cans bundle (his right wing) must be on screen-RIGHT.
+- The PET bottle bag (his left wing) must be on screen-LEFT.
+This is the opposite screen arrangement from the base image — do not copy
+the base image's left/right layout.
 
-Still seen from BEHIND — the back of his round head (dark navy-gray fur,
-no face visible), his back and rounded body, short legs. Still the exact
-same two items (just with corrected screen sides as specified above) —
-nothing added or dropped.
-
-His body is upright and steady now, no more wobble — he has successfully
-made it outside without dropping anything. A settled, composed stance,
-task accomplished.
+His body is upright and steady — he has successfully made it outside
+without dropping anything. A settled, composed stance, task accomplished.
 
 KEEP IDENTICAL: camera position (fixed, do not move), interior
-entryway/door design and colors, lighting mood, overall color tone.
+entryway/door design and colors visible through the doorway, lighting
+mood, overall color tone, character's fur colors/texture.
 
 OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
@@ -125,6 +128,11 @@ OTHER CONSTRAINTS:
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v11 (끝 프레임) — v9를 베이스로 좌우 교정 지시 → 반영 안 됨
+- 결과: "화면 좌우가 바뀌어야 한다"고 명시적으로 설명했는데도 소품 위치가 v9와 동일하게 유지됨.
+- 교훈: 이미 틀린 이미지를 베이스로 주고 "이 부분만 고쳐라"고 하면, 모델이 베이스 이미지의 기존 레이아웃에 강하게 앵커링되어 텍스트 교정 지시를 무시하는 경향이 있음(앞서 "제자리 이동" 실패와 유사한 패턴). **틀린 결과물을 계속 베이스로 재사용하며 고치려 하지 말고, 마지막으로 올바르다고 확인된 이미지(여기선 시작 프레임)로 베이스를 되돌려서 처음부터 다시 생성**하는 게 더 효과적 → v12.
+- 프롬프트 전체 텍스트: 위 v12 항목의 "v11 결과도 실패..." 참고, 또는 이전 대화 기록 참고.
 
 ### v9 (끝 프레임) — 뒷모습 전환 자체는 성공했으나 "문턱 근처"라 도착점이 약함
 - 결과: 뒷모습, 문 열림, 배경/소품 일관성 모두 확인되어 한때 "최종 확정"으로 기록했으나, 실제 영상(Veo) 생성 결과가 8초 안에 이 애매한 종착점까지도 제대로 못 이어가는 문제(문 열림/닫힘 반복, 제자리걸음)로 이어짐.
