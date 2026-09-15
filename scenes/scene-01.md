@@ -23,7 +23,8 @@
 - [x] 캐릭터 크기가 문/신발장 대비 다소 큰 편(사람 몸통만한 크기)인 점 확인 — 숏폼 특성상 문제없다고 판단, 크기 앵커 문구 추가 없이 현재 상태로 진행하기로 결정
 - [x] 끝 프레임 v4 결과 확인 → 실패. 문도 안 열리고 포즈도 거의 그대로라 시작 프레임과 사실상 동일 → "변화 요청"을 최상단에 강조하는 구조로 v5 재작성
 - [x] 끝 프레임 v5 결과 확인 → 부분 성공. 문은 열렸지만(성공) 캐릭터 위치/기울임은 여전히 거의 그대로(실패) → 요구사항을 "이동"이라는 단일 핵심 변화로 좁히고, v5 결과물(문 열림)을 새 베이스로 삼아 v6 재작성
-- [ ] 끝 프레임을 v6 프롬프트로 재생성 (캐릭터 참조 + v5 결과물인 "문 열린" 이미지 2장 첨부, 베이스 교체됨)
+- [x] 끝 프레임 v6 결과 확인 → 실패. 문이 더 열리긴 했으나 캐릭터 위치는 또 그대로 → **접근 방식 자체를 "제자리 이동" → "카메라 줌인/거리 변화"로 전환**하여 v7 재작성 (아래 "위치 이동 대신 카메라 거리 변화" 참고)
+- [ ] 끝 프레임을 v7 프롬프트로 재생성 (캐릭터 참조 + v6 결과물 2장 첨부)
 - [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -69,42 +70,39 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v6)
-> **첨부**: 캐릭터 참조 이미지 + **v5 결과물("문 열린" 이미지)**을 새 베이스로 첨부. (시작 프레임이 아니라 v5 결과물을 베이스로 씀)
+## ② 끝 프레임 (나노바나나 프롬프트, v7)
+> **접근 전환**: v4~v6까지 "같은 구도 유지 + 캐릭터 위치만 이동"을 계속 요청했지만 매번 위치가 거의 안 바뀌었음. 카메라가 문(바깥) 방향에서 그를 바라보는 구도라, "문밖으로 나간다"는 사실상 "카메라 쪽으로 가까워진다"는 뜻인데, 모델이 "배경/구도 유지" 지시를 픽셀 단위로 지키려다 보니 인물 이동 자체를 무시하는 패턴이 반복됨. 그래서 "제자리에서 옮겨라"가 아니라 **"카메라는 그대로, 그가 다가와서 화면에 더 크게 잡힌다"는 줌인/프레이밍 변화**로 요청 방식을 바꿈.
+> **첨부**: 캐릭터 참조 이미지 + v6 결과물(문 많이 열린 이미지)을 베이스로 첨부
 
 ```
-Using the second reference image (the door-open photo) as the exact base.
+Using the second reference image (the latest attempt photo) as the base
+for character identity, colors, and style — but this is a full
+recomposition of the shot, not a small pixel-level edit.
 
-REQUIRED CHANGE (the single most important change — must be large and
-unmistakable, do not treat this as a subtle or minor adjustment):
-Chang-su has physically moved forward by at least one full body-width
-compared to the base image. He is no longer standing on the entryway
-doormat — both feet are now past the door threshold, standing just
-outside in the hallway/landing beyond the door. His position in the frame
-must be clearly, obviously further forward and closer to (or past) the
-doorway than in the base image. If you compare the two images side by
-side, the position difference must be immediately obvious within one
-second of looking — not something you have to look closely to notice.
+REQUIRED CHANGE — CAMERA PUSH-IN (the single most important change):
+Chang-su has walked forward through the doorway and is now much closer to
+the camera than in the base image, as if the camera stayed in place while
+he approached it. He must appear noticeably larger in the frame — roughly
+25-35% bigger/taller than in the base image. Because he is closer to
+camera: the top of the door frame is now partially cropped out of frame or
+only visible at the very top edge, and the shoe rack on the side is now
+mostly or fully out of frame (he has walked past it). This must be an
+unmistakable, obvious change in framing and scale compared to the base
+image — NOT the same wide shot with him standing in the same spot.
 
-As part of this forward movement, his body is tilted/leaning noticeably to
-keep the load balanced, one wing-flipper and its item swinging slightly
-with the motion — a natural mid-stride wobble, not exaggerated or
-cartoonish.
+His body is tilted/leaning to counterbalance the load, mid-stride, a
+natural subtle wobble. NOT exaggerated or cartoonish.
 
-KEEP IDENTICAL to the base image (everything except the required position
-change above):
-- Same background, entryway/hallway details, wall color, lighting, color
-  tone.
-- Same door, now open, in the same open position as the base image.
+KEEP THE SAME STYLE as the base image:
 - Same three recycling items in the same positions: tied cardboard bundle
   under one wing-flipper, clear bag of PET bottles in the other
-  wing-flipper, mesh bag of cans hooked on top of the cardboard bundle —
-  nothing added, nothing dropped.
-- Same camera lens/framing style (adjust only what naturally changes
-  because he is now closer to camera / further into the hallway).
+  wing-flipper, mesh bag of cans hooked on top of the cardboard bundle.
+- Same lighting mood, color tone, and character colors/fur texture.
+- Whatever entryway/hallway background is now visible at this closer
+  camera distance should still look consistent with the same home.
 
-Expression: stays natural and understated, a touch more visible effort
-than the base image. Subtle, NOT exaggerated or cartoonish.
+Expression: natural and understated, a touch more visible effort than the
+base image. Subtle, NOT exaggerated or cartoonish.
 
 FACE LOCK (highest priority, do not deviate):
 - The face must exactly match the reference images: large, round,
@@ -113,8 +111,7 @@ FACE LOCK (highest priority, do not deviate):
 - NO eyebrows of any kind. Smooth dark head fur directly above the eyes,
   nothing resembling an eyebrow shape, line, or furrow.
 - Keep the exact same round head shape, face proportions, orange beak
-  shape and size, and fur coloring as the reference images. Do not narrow,
-  elongate, or reshape the eyes or face in any way.
+  shape and size, and fur coloring as the reference images.
 
 OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
@@ -127,6 +124,10 @@ OTHER CONSTRAINTS:
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v6 (끝 프레임) — 단일 요구("이동"만)로 좁혔지만 여전히 실패
+- 결과: 문은 더 열렸지만 캐릭터 위치는 또 그대로. "제자리 이동" 요청 자체가 이 구도(카메라가 문/바깥 방향에서 그를 바라봄)에서는 잘 안 통하는 것으로 판단.
+- 교훈: 아래 "위치 이동 대신 카메라 거리 변화" 참고 → v7에서 접근 전환.
 
 ### v5 (끝 프레임) — REQUIRED CHANGES 리스트 3개 → 1개만 반영됨
 - 결과: 문 열림은 성공, 하지만 캐릭터 이동/기울임은 여전히 거의 반영 안 됨.
