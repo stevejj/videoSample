@@ -5,7 +5,7 @@
 - 등장: 팽창수 단독 (팽미순 미등장)
 - 배경: 평범한 신혼부부 집 현관
 - 상황: 남편이 재활용품을 한 번에 다 들고 나가려는 모습. "남편들은 왜 분리수거를 한 번에 다 버리려고 할까" 공감 포인트.
-- 결말: 씬 자체 완결형 — 위태롭게 휘청이지만 넘어뜨리거나 쏟지 않고 힘겹게 문밖으로 잘 들고 나가는 데 성공.
+- 결말(v16 업데이트): 씬 자체 완결형 — 위태롭게 휘청이지만 넘어뜨리거나 쏟지 않고 힘겹게 문밖으로 잘 들고 나간 뒤, **문을 닫고 완전히 퇴장** → 끝 프레임은 캐릭터 없는 빈 현관(문 닫힘)으로 마무리.
 - 과장 수준: 현실적으로 조금 많은 정도
 
 ## 소품 (시작/끝 프레임 동일하게 유지)
@@ -37,7 +37,9 @@
 - [x] v14 시도 전, 사용자가 영상 결과를 보고 방향 전환: 좌우 반전은 억지로 맞추지 않아도 될 것 같다고 판단 → **"확실히 밖으로 나가있기"에만 집중**하고 소품 "배치 유지" 문구도 제거한 v15로 재작성. v14는 시도하지 않고 폐기.
 - [x] 끝 프레임 v15 결과 확인 → 거리(확실히 밖으로 나가있음, 난간/옆 건물까지 보임) 성공. 소품 좌우는 나노바나나 프롬프트로는 끝내 실패했지만, **Flow 자체의 영역 지정 좌우 교체 기능으로 사용자가 직접 수정**하여 해결. **시작/끝 프레임 최종 확정.**
 - [x] 영상 연결 프롬프트(Veo 3.1 Lite) v3 작성 — 최종 확정된 끝 프레임(더 멀리 나간 버전)에 맞춰 이동 거리 조정
-- [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
+- [x] 사용자 요청으로 컨셉 대전환: 끝 프레임을 **캐릭터 없는 빈 현관(문 닫힘)**으로 변경 → 좌우/거리 문제 자체가 무의미해짐. v16 작성.
+- [ ] 끝 프레임을 v16 프롬프트로 재생성 후 결과 확인
+- [ ] **끝 프레임이 v16으로 확정되면 영상 연결 프롬프트도 전면 재작성 필요** (기존 v3는 "밖에 서있는 모습"이 도착점이었는데, v16은 "문 닫고 완전히 퇴장"이 도착점이라 스토리 구조 자체가 다름)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -82,54 +84,37 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v15)
-> **좌우 반전은 보류(사용자 결정)**: 영상 결과를 보니 이 정도면 괜찮을 것 같다고 판단, 좌우를 억지로 맞추는 시도는 중단하고 **"확실히 밖으로 나가있기"에만 집중**. 추가로 발견한 점: 이전 프롬프트들에서 소품에 대해 "same relative arrangement(배치 유지)"라는 문구를 다른 곳에 같이 넣었었는데, 이게 "좌우를 바꿔라"는 지시와 모순되어 혼란을 줬을 수 있음 → 이번엔 소품 배치에 "유지하라"는 말을 넣지 않고 자연스럽게 두기로 함.
-> **첨부**: 캐릭터 참조 이미지 + **확정된 시작 프레임 이미지**(정면, 문 닫힘) 2장
+## ② 끝 프레임 (나노바나나 프롬프트, v16)
+> **컨셉 대전환(사용자 요청)**: 캐릭터가 나가있는 모습 대신, **캐릭터 없는 빈 현관 + 문 닫힘**으로 변경. "문 열고 나가서 다시 닫는다"까지 전체 과정을 8초 영상이 담당하고, 끝 프레임은 그 결과(빈 방)만 보여주는 구조. 좌우 반전/거리 문제 자체가 사라짐.
+> **첨부**: 확정된 시작 프레임 이미지 1장 (캐릭터가 없는 장면이라 캐릭터 참조는 불필요)
 
 ```
-Using the second reference image (the confirmed front-facing start frame
-photo) for character identity, colors, fur texture, and the room/door
-design — but this is a full new photograph of a later moment in the same
-continuous scene, from the exact same fixed camera position.
+Using the reference image (the confirmed start frame photo) as the exact
+base for the room's background, door design, and lighting — generate a
+new vertical 9:16 image of the exact same entryway, but completely empty.
 
-THE SCENE: Chang-su has turned around, pushed the door open, and walked
-all the way outside — he is now standing on the outdoor landing, both
-feet past the door threshold. He is seen from BEHIND: the back of his
-round head (dark navy-gray fur, no face visible), his back and rounded
-body.
+THE SCENE: The same home entryway, from the exact same fixed camera
+position and framing as the reference image. The front door is closed,
+matching the reference image. There is no character in the frame — no
+penguin, no recycling items, nothing being carried. Just the empty room.
 
-REQUIRED CHANGE — HE MUST BE CLEARLY OUTSIDE (the most important part,
-must be unmistakable): He is noticeably smaller in the frame than he
-would be if he had just turned around near the doorway — roughly half the
-height he'd appear if still standing just inside. The door frame surrounds
-him from a moderate distance, and a good amount of outdoor scenery (sky,
-railing, neighboring building, ground) is visible around him, more than
-just a sliver. If this looks like he only took one step past the door,
-that is NOT far enough — he should look like he walked several steps out
-onto the landing.
+KEEP IDENTICAL: camera position, entryway layout, shoe rack (with the same
+shoes as in the reference image), wall color, door design and color,
+doormat, lighting mood, overall color tone — everything exactly as in the
+reference image, minus the character.
 
-He is still carrying the same two items he had in the base image: the
-tied cardboard bundle with the mesh bag of cans hooked to it, and the
-clear bag of PET bottles — nothing added or dropped.
-
-His body is upright and steady, a settled composed stance — task
-accomplished, no wobble.
-
-KEEP IDENTICAL: camera position (fixed, do not move), interior
-entryway/door design and colors seen through the doorway, lighting mood,
-overall color tone, character's fur colors and texture.
-
-OTHER CONSTRAINTS:
-- Do not alter Chang-su's body proportions, colors, or fur texture from
-  the reference image.
-- Do not add any clothing, costume, accessories, or props on his body
-  beyond the two items already described.
-- No text, no logos, no watermark.
+OTHER CONSTRAINTS: No text, no logos, no watermark. No people, animals, or
+characters of any kind in the frame.
 ```
 
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v15 (끝 프레임) — 거리는 성공, 좌우는 Flow 수동 편집으로 해결. 이후 컨셉 자체가 바뀌어 폐기
+- 결과: "확실히 밖으로 나가있기"는 성공(난간/옆 건물까지 보임). 소품 좌우는 프롬프트로는 끝내 실패했으나 Flow 자체 편집 툴로 사용자가 직접 수정. 한때 "시작/끝 프레임 최종 확정"으로 기록됨.
+- 이후 변경: 사용자가 끝 프레임 컨셉을 아예 바꿔서(캐릭터 없는 빈 현관+문 닫힘) v16으로 재작성. v15는 더 이상 사용하지 않음.
+- 프롬프트 전체 텍스트는 위 대화 기록 참고.
 
 ### v14 (끝 프레임) — 턴어라운드 시트만으로 새로 생성 (시도 전 폐기)
 - 좌우 반전을 여전히 노려서 설계했었으나, 실제 영상 결과를 보고 사용자가 "이 정도면 괜찮다"고 판단 → 좌우는 보류하고 거리(확실히 밖으로 나가있기)에만 집중하는 v15로 방향 전환. v14는 시도하지 않음.
@@ -229,6 +214,7 @@ logos, no watermark.
 ```
 
 ## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v3)
+> ⚠️ **재작성 필요**: 끝 프레임 컨셉이 v16(캐릭터 없는 빈 현관+문 닫힘)으로 바뀌어서, 이 v3는 더 이상 끝 프레임과 안 맞음. v16 결과 확인되면 "문 열고 나가서 다시 닫는다"까지 담는 새 버전으로 재작성 예정. 아래는 이전(v15 기준) 버전, 참고용으로 남겨둠.
 > **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문 밖으로 나가 난간 근처까지 멀리 이동(끝 프레임과 매칭, v2보다 훨씬 먼 거리). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
 > **v2 → v3 변경 이유**: v2 작성 후 실제 영상 테스트 전에 끝 프레임 자체를 더 멀리(문턱이 아니라 난간 근처까지) 나간 모습으로 다시 만들었음. 그래서 영상이 커버해야 할 이동 거리가 훨씬 커짐 — "문턱에서 멈춤"이 아니라 "화면에서 눈에 띄게 작아질 때까지 계속 걸어감"으로 수정. v2의 CRITICAL RULES(문 상태 고정, 지속 전진, 소품 깜빡임 금지, 반복/역행 금지)는 그대로 유지.
 > **소품 좌우**: 끝 프레임에서 Flow 편집 툴로 좌우를 직접 바꿨으므로, 영상 중간에 소품이 자연스럽게 좌우가 바뀌는 것도 정상 — 이 부분은 영상 프롬프트에서 별도로 신경 쓰지 않음.
