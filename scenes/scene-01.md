@@ -35,7 +35,8 @@
 - [x] 끝 프레임 v12 결과 확인 → 부분 실패. 좌우 여전히 안 바뀜(시작 프레임 베이스로 되돌려도 실패), "완전히 바깥으로 나감"도 미반영, 문턱 근처에서 또 멈춤 → 우선순위 분리: 거리는 "단일 요청 집중" 전략, 좌우는 "미러/flip" 개념으로 재시도하는 v13 작성
 - [x] 끝 프레임 v13 결과 확인 → 좌우 문제 지속(사용자 확인). 4번째 접근도 실패 → 이전 생성물을 베이스로 쓰는 것 자체가 원인일 수 있다고 판단, **최초 턴어라운드 시트(뒷모습 포함)만 참조해 이전 생성물 없이 완전히 새로 생성**하는 v14 작성
 - [x] v14 시도 전, 사용자가 영상 결과를 보고 방향 전환: 좌우 반전은 억지로 맞추지 않아도 될 것 같다고 판단 → **"확실히 밖으로 나가있기"에만 집중**하고 소품 "배치 유지" 문구도 제거한 v15로 재작성. v14는 시도하지 않고 폐기.
-- [ ] 끝 프레임을 v15 프롬프트로 재생성 후 결과 확인
+- [x] 끝 프레임 v15 결과 확인 → 거리(확실히 밖으로 나가있음, 난간/옆 건물까지 보임) 성공. 소품 좌우는 나노바나나 프롬프트로는 끝내 실패했지만, **Flow 자체의 영역 지정 좌우 교체 기능으로 사용자가 직접 수정**하여 해결. **시작/끝 프레임 최종 확정.**
+- [x] 영상 연결 프롬프트(Veo 3.1 Lite) v3 작성 — 최종 확정된 끝 프레임(더 멀리 나간 버전)에 맞춰 이동 거리 조정
 - [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -227,10 +228,60 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v2)
-> **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문턱 근처에서 안정적으로 멈춤(끝 프레임과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
-> **v1 결과 분석(2fps 프레임 분석)**: (1) 문이 열렸다(1.5~4.5초)→거의 닫힘(5.0~5.5초)→다시 열림(6.0초~) 하며 왔다갔다함. (2) 3.0초에 뒤돈 이후 8초 끝까지 같은 자리에서 제자리걸음만 하고 실제 이동이 없음. (3) 4.0초에 종이박스 묶음이 사라졌다가 4.5초에 재등장. → 원인: 여러 단계(문 열기+뒤돌기+걷기+휘청임+멈춤)를 한 번에 요청한 게 Lite 모델엔 과했던 것으로 추정. v2는 "절대 하면 안 되는 것"을 명시적으로 못박아 단순화.
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v3)
+> **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문 밖으로 나가 난간 근처까지 멀리 이동(끝 프레임과 매칭, v2보다 훨씬 먼 거리). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
+> **v2 → v3 변경 이유**: v2 작성 후 실제 영상 테스트 전에 끝 프레임 자체를 더 멀리(문턱이 아니라 난간 근처까지) 나간 모습으로 다시 만들었음. 그래서 영상이 커버해야 할 이동 거리가 훨씬 커짐 — "문턱에서 멈춤"이 아니라 "화면에서 눈에 띄게 작아질 때까지 계속 걸어감"으로 수정. v2의 CRITICAL RULES(문 상태 고정, 지속 전진, 소품 깜빡임 금지, 반복/역행 금지)는 그대로 유지.
+> **소품 좌우**: 끝 프레임에서 Flow 편집 툴로 좌우를 직접 바꿨으므로, 영상 중간에 소품이 자연스럽게 좌우가 바뀌는 것도 정상 — 이 부분은 영상 프롬프트에서 별도로 신경 쓰지 않음.
 
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home, looking
+toward the open front door and the outdoor landing beyond it.
+
+Chang-su, a small fluffy 3D-pixar-style penguin character, starts facing
+the camera, holding a heavy load of recycling: a tied cardboard bundle
+with a mesh bag of cans hooked to it in one wing-flipper, a clear bag of
+PET bottles in the other. The front door in front of him is closed.
+
+In one single continuous motion, with no pauses, no reversals, and no
+repeated actions: he turns around away from the camera, pushing the door
+open with his body as he turns, and immediately begins walking steadily
+toward the open doorway and beyond it. He keeps moving forward for the
+entire remainder of the clip — through the doorway, out onto the outdoor
+landing, and continuing several more steps toward the railing — getting
+smaller in the frame with every second as he gets farther from the fixed
+camera, ending up noticeably small and distant by the final frame,
+matching a wide shot of him standing near the railing with buildings and
+sky visible around him.
+
+CRITICAL RULES (do not violate these):
+- The door opens exactly once, early in the clip, and then stays open for
+  the rest of the video. It must never close again, even partially, at
+  any point after it opens.
+- Chang-su moves continuously forward/away from camera for the entire
+  clip, covering a large distance — from standing just inside the door to
+  standing far out near the railing. He must never stand still, walk in
+  place, or move backward — there must be clear, steady progress in every
+  second of footage, from start to finish. The amount of walking should
+  feel proportional to the distance covered, not a small shuffle.
+- The two items he carries stay solid and continuously visible the entire
+  time. They must not flicker, disappear, or change shape.
+- Do not repeat, loop, hesitate, or reverse any part of the motion.
+
+His body leans/wobbles slightly side to side as he walks, working to keep
+his balance under the load — a natural, subtle wobble, not exaggerated.
+He never drops or spills anything.
+
+Motion should be natural and continuous, not exaggerated or cartoonish.
+
+Audio: gentle, soft background music throughout (calm, warm, understated
+mood). Light, realistic sound effects only — a door creak/click as it
+opens, soft footsteps (getting fainter as he gets farther away), a faint
+rustle of the plastic bag and clinking cans. NO dialogue, NO voiceover,
+NO on-screen text or captions.
+```
+
+### v2 (참고용, 실제 테스트 전에 끝 프레임이 바뀌어서 폐기)
 ```
 An 8-second continuous shot, camera completely static — no panning, no
 zooming, no cuts — fixed in the entryway of an ordinary home.
