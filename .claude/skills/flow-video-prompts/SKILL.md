@@ -33,6 +33,21 @@ other way around.
    frame, walking toward it means moving away from camera and turning around
    — not staying front-facing while advancing. Sketch this out mentally before
    writing the end-frame prompt; getting it wrong costs several rounds later.
+   This applies to the video-connect prompt too, one level more specific:
+   trace which direction each body part actually faces at each moment.
+   "Facing the camera" already means the back faces away from camera, toward
+   whatever is behind the character. Writing "he turns around, then pushes
+   the door with his back" after that point is a physical contradiction —
+   once turned, his front faces the door, not his back. An action requiring
+   a specific body part to contact a specific surface (like backing into a
+   door because the hands are full) has to be placed at the moment that part
+   is actually oriented toward that surface — here, that means doing it
+   *before* the turn, while still facing camera, and moving the turn to
+   after the door is already open. Getting this backward produced visible
+   breakdown in the actual Veo output (the door direction flickering, the
+   character's body seeming to merge into the door) rather than just a
+   logical oddity — the model tries to reconcile the contradiction and fails
+   visibly.
 3. **Write the start-frame prompt** (Nano Banana). Attach the relevant
    character reference image(s) only — one character reference if solo, two if
    both appear together (see README's "캐릭터 인식 원리" section for how to

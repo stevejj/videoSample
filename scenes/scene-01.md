@@ -46,7 +46,8 @@
 - [x] v8 실제 테스트 전, 스토리보드 그리드(나노바나나, 무료)로 먼저 동작을 검증하기로 방향 전환 → 그리드 v1~v5 반복하며 0~7초 전 구간 확정 (관용구 회피, 매초 제약 반복+요약 규칙, 긍정+부정 제약 페어 등 교훈 발견 및 스킬에 반영)
 - [x] 확정된 스토리보드 그리드의 초 단위 내용을 그대로 옮겨서 영상 프롬프트 v9 작성
 - [x] v9 영상 결과를 2fps로 프레임 분석 → 최종 상태(문 닫힘/빈 방)는 정확했지만, 문 미는 동작에 시간을 너무 많이 써서(0~4초) 캐릭터가 거의 안 움직이다가 5.5~6초에 급하게 이동을 몰아 처리하며 옆모습 노출 글리치 발생 → 문 미는 구간에 절대 시간 상한 명시, 2~6초 구간에 "매초 이동 필수" 규칙 추가한 v10 재작성
-- [ ] 영상을 v10 프롬프트로 재생성 후 결과 확인
+- [x] v10 시도 전, 사용자가 물리적 모순 지적: "뒤돌아서 등으로 민다"는 뒤돈 순간 정면이 문을 향하게 되어 등으로 미는 게 불가능한 지시였음 → 뒤돌기를 미는 동작 뒤(3초)로 옮기고, 미는 동안엔 정면을 유지한 채 뒷걸음질로 등을 대는 구조로 v11 재작성
+- [ ] 영상을 v11 프롬프트로 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -297,9 +298,11 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v10)
-> **v9 영상 결과 분석(2fps)**: 이번엔 최종 상태(문 닫힘, 빈 방)는 정확히 맞았고 문 디자인/외부 구조물 문제도 없었음(진전!). 다만 (1) 0~4초 동안 문 미는 동작에 시간이 너무 많이 쓰이고 캐릭터가 도어매트에서 거의 안 움직임, (2) 5.5~6초에 급하게 이동을 몰아 처리하려다 몸이 옆모습으로 홱 틀어지며 얼굴 일부가 노출되는 글리치 발생. **원인**: "MOST IMPORTANT MOMENT... 서두르지 말고 무게감 있게"라는 강조가 "1s-2s"라는 명시적 시간 제한보다 더 강하게 작용해서 문 미는 구간이 전체 러닝타임 절반을 잡아먹음 → 남은 "자연스럽게 걸어나가기" 구간이 급격히 압축되며 글리치 발생.
-> **v10 수정**: 문 미는 구간에 "무게감" 대신 **절대 시간 상한**을 못박고("2초를 넘기면 안 됨"), 2~6초 구간에 "매초 반드시 눈에 띄게 이동해야 한다"는 규칙 추가. 5~6초 구간에 "뒷모습 유지" 재차 강조.
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v11)
+> **v10 시도 전, 사용자가 물리적 모순 지적**: 카메라를 보고 서있는 상태에서 문은 이미 캐릭터 뒤쪽에 있음(카메라→캐릭터→문 순서 배치). 그런데 v9/v10 프롬프트는 "뒤돌아서(등을 카메라 쪽으로) 등으로 문을 민다"고 했는데, 뒤돌면 정면이 문 쪽을 향하게 되므로 그 상태에서 "등으로" 미는 건 물리적으로 불가능함. 모델이 이 모순을 풀려다 문이 안쪽/바깥쪽으로 왔다갔다 하고 몸이 문에 섞여 들어가는 렌더링 붕괴를 일으킨 것으로 추정.
+> **v11 수정**: **순서를 바꿈** — 뒤돌지 않은 상태(카메라를 보는 채로) 그대로 뒷걸음질로 문에 등을 대고 밀어서 연다(이 구간은 얼굴이 보임, 자연스러움). 문이 열린 다음에야 한 번 뒤돌아서 문 쪽으로 걸어나간다. "뒤돌기"를 미는 동작 이전이 아니라 **이후(3초 시점)**로 이동.
+> **v9 영상 결과 분석(2fps)**: 최종 상태(문 닫힘, 빈 방)는 정확히 맞았고 문 디자인/외부 구조물 문제도 없었음(진전!). 다만 (1) 0~4초 동안 문 미는 동작에 시간이 너무 많이 쓰이고 캐릭터가 도어매트에서 거의 안 움직임, (2) 5.5~6초에 급하게 이동을 몰아 처리하려다 몸이 옆모습으로 홱 틀어지며 얼굴 일부가 노출되는 글리치 발생. **원인**: "MOST IMPORTANT MOMENT... 서두르지 말고 무게감 있게"라는 강조가 "1s-2s"라는 명시적 시간 제한보다 더 강하게 작용해서 문 미는 구간이 전체 러닝타임 절반을 잡아먹음 → 남은 "자연스럽게 걸어나가기" 구간이 급격히 압축되며 글리치 발생.
+> **v10 수정(v11에도 유지)**: 문 미는 구간에 "무게감" 대신 **절대 시간 상한**을 못박고("2초를 넘기면 안 됨"), 이동 구간에 "매초 반드시 눈에 띄게 이동해야 한다"는 규칙 추가.
 > **v8 → v9 변경 이유**: 확정된 스토리보드 그리드(나노바나나, 8컷)가 나왔으니, 동작을 처음부터 다시 구상하지 않고 **그리드의 초 단위 내용을 그대로 옮겨서** 작성. 그리드에서 검증된 교훈(관용구 금지, 매 비트마다 "뒷모습 유지"·"소품 유지" 반복 + 마지막에 요약 규칙, 긍정 서술+부정 제약 페어)도 영상 프롬프트에 동일하게 적용.
 > **v7 → v8 변경 이유(사용자 지적)**: "등으로 문을 힘겹게 밀어서 여는 것"이 이 씬의 핵심 포인트인데, CRITICAL RULES 등 다른 세부 규칙들 사이에 묻혀서 강조가 부족했음 → 이 동작을 프롬프트 최상단에 **가장 중요한 순간(MOST IMPORTANT MOMENT)**으로 분리해서 구체적인 신체 동작(온 몸을 뒤로 기대어 밀기, 다리로 바닥을 밀어내기, 문이 살짝 버티다가 밀려 열림 등)으로 생생하게 묘사.
 > **v6 → v7 변경 이유(사용자 지적)**: 문이 바깥쪽으로 열려야 하는데 그렇지 않았고, 문 열렸을 때 바깥 풍경 안에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 확실히 바깥 방향으로 열리고, 문 밖은 순수한 야외 배경(하늘/바닥/난간/나무 등)만 보이도록 명시.
@@ -328,22 +331,24 @@ storyboard grid (0s-7s) — follow it second by second:
 
 - 0s: Chang-su faces the camera, holding a heavy load of recycling (a tied
   cardboard bundle with a mesh bag of cans hooked to it in one
-  wing-flipper, a clear bag of PET bottles in the other). Door closed.
-- 1s (MOST IMPORTANT MOMENT — brief but forceful, NOT slow): he turns
-  around once so his back fully faces the camera, leans his whole body
-  weight backward, and pushes hard against the door with his back,
-  straining, legs pushing against the floor for leverage. This must be
-  visually clear and weighty within this ONE second — a strong, sudden
-  effort, not a slow drawn-out lean.
-- 2s: the push finishes and the door swings open — by the END of this
-  second the door must already be fully open. A narrow gap of bright
-  light was visible as it swung; the door itself is completely undamaged
-  and unmarked, simply opening on its hinge like normal — it must NOT
-  show any cracks, fractures, or damage of any kind. THE DOOR-PUSH BEAT
-  IS NOW OVER — it must not continue into 3s.
-- 3s: he is already stepping through the threshold, walking briskly. Still
-  seen from BEHIND, face NOT visible. Still carrying the exact same two
-  items, clearly visible in his wings.
+  wing-flipper, a clear bag of PET bottles in the other). Door closed,
+  directly behind him.
+- 1s (MOST IMPORTANT MOMENT — brief but forceful, NOT slow): still facing
+  generally toward the camera (do NOT turn around yet), he takes a step
+  backward so his back presses against the door, then leans his whole body
+  weight back and pushes hard against the door with his back, straining,
+  legs pushing against the floor for leverage. His face/front is still
+  visible toward camera during this push — he has not turned around.
+- 2s: the push finishes and the door swings open outward, away from him
+  and away from the camera — by the END of this second the door must
+  already be fully open. The door itself is completely undamaged and
+  unmarked, simply opening on its hinge like normal — it must NOT show any
+  cracks, fractures, or damage of any kind. THE DOOR-PUSH BEAT IS NOW
+  OVER — it must not continue into 3s. He still has not turned around yet.
+- 3s: NOW, for the first (and only) time, he turns around so his back
+  fully faces the camera, and immediately begins stepping through the open
+  threshold, walking briskly. Face NOT visible from this point on. Still
+  carrying the exact same two items, clearly visible in his wings.
 - 4s: he is now clearly past the doorway, well out onto the landing,
   walking forward at a steady pace. Still seen from BEHIND, face NOT
   visible, still carrying the same two items. He must look noticeably
@@ -373,9 +378,11 @@ never cover a large distance in one sudden jump between two seconds.
 The door itself — the same solid brown wooden door with the same silver
 lever handle and door-closer arm hardware seen in the reference images —
 stays visually consistent throughout, whether closed, opening, or open. It
-does not change color, material, or hardware design at any point. The
-door swings OUTWARD, away from the camera and away from the interior, out
-into the exterior space — not inward toward the camera or into the room.
+does not change color, material, or hardware design at any point. Because
+he backs into it and pushes with his back while still facing camera, the
+door swings outward, away from him and away from the camera, out into the
+exterior space — it must NEVER swing inward toward the camera/character,
+and must never appear to open toward him or trap/press against him.
 
 Beyond the doorway, only ordinary outdoor scenery is visible: sky, the
 outdoor landing/walkway floor, a railing, trees or greenery, maybe a
@@ -384,23 +391,30 @@ screen door, or any door-like structure of any kind visible in the
 exterior — just a normal outdoor space.
 
 CRITICAL RULES (do not violate these):
+- Chang-su does NOT turn around to push the door. He pushes it open with
+  his back while still facing generally toward the camera (backing into
+  it) — turning around first and then pushing with his back is physically
+  impossible (his front, not his back, would face the door) and must not
+  happen.
 - The door-push struggle happens ONLY within 1s-2s and must be finished —
   door fully open — by the end of 2s. It must NOT extend into 3s or
   beyond. Make it visually strong and clear within that short window
   rather than stretching it out slowly.
-- From 2s through 6s, Chang-su must show clear, visible forward progress
+- Chang-su turns his body only ONCE, at 3s (after the door is already
+  open), to face away from camera. Before 3s he faces generally toward
+  the camera (needed to push the door with his back); after that single
+  turn at 3s, he must NEVER face the camera again and must NEVER rotate
+  his body for the rest of the clip, all the way through 7s — only his
+  walking path curves toward screen-RIGHT, his back stays to the camera
+  throughout every remaining second. This applies just as strictly at
+  5s-6s as it does right after the turn — do not let him spin toward
+  camera to cover ground quickly.
+- From 3s through 6s, Chang-su must show clear, visible forward progress
   in EVERY single second. He must never remain in nearly the same
   position for more than one consecutive second, and he must never cover
   a large distance in one abrupt jump — the walk must look gradual and
-  continuous across all five of these seconds, not front-loaded pushing
-  followed by a rushed catch-up.
-- Chang-su turns his body only ONCE, at 1s, to face away from camera.
-  After that single turn, he must NEVER face the camera again and must
-  NEVER rotate his body for the rest of the clip, all the way through 7s —
-  only his walking path curves toward screen-RIGHT, his back stays to the
-  camera throughout every remaining second. This applies just as strictly
-  at 5s-6s as it does right after the turn — do not let him spin toward
-  camera to cover ground quickly.
+  continuous across these seconds, not front-loaded pushing followed by a
+  rushed catch-up.
 - The door's appearance (color, material, handle, closer hardware) stays
   perfectly consistent throughout — always the same door as in the
   reference images, never a different design, and never showing cracks or
@@ -432,6 +446,9 @@ fading as he walks away, and a soft door-closer click/thud as the door
 swings shut on its own near the end. NO dialogue, NO voiceover, NO
 on-screen text or captions.
 ```
+
+### v10 (참고용, 시도 전 폐기) — 물리적으로 모순된 지시("뒤돈 채 등으로 밀기")를 그대로 가지고 있었음
+- v9의 타이밍 문제만 고치고 "뒤돌아서 등으로 민다"는 근본 모순은 그대로였음. 사용자가 지적해서 시도해보지 못하고 v11로 대체.
 
 ### v9 (참고용) — 스토리보드 그리드 기반, 최종 상태는 정확했으나 타이밍 배분 실패
 - 결과: 문 디자인/외부 구조물 문제는 해결됨(진전). 문 미는 동작이 "MOST IMPORTANT MOMENT... 서두르지 말고"라는 강조 때문에 0~4초까지 늘어져서 캐릭터가 거의 안 움직임 → 5.5~6초에 이동을 몰아 처리하며 옆모습 글리치.
