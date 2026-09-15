@@ -220,6 +220,7 @@ logos, no watermark.
 ## 스토리보드 그리드 프롬프트 (나노바나나, 영상 프롬프트 작성 전 무료 사전 검증)
 > **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임(v4) + 확정된 끝 프레임(v16), 총 3장, 이 순서로.
 > **v1 결과 확인**: 0~4초 흐름은 좋았음. **v2 수정**: 5초에 오른쪽으로 이동하는 게 안 보이고 중앙에 그대로 있었음 → 5초부터 오른쪽으로 각도를 틀며 이동하는 것으로 수정. 6초는 몸이 절반 이상 가려져야 하는데 명시가 부족했음 → "MORE THAN HALF hidden"으로 명시.
+> **v3 수정(사용자 요청)**: 5·6·7초가 각각 따로 노는 게 아니라 **하나의 자연스럽게 이어지는 퇴장 동작**으로 읽혀야 함 → 세 컷 사이 전환이 매끄럽게 이어지도록 명시하는 문단 추가.
 
 ```
 Using the three reference images — the first is Chang-su's character
@@ -261,6 +262,16 @@ show a plausible, smoothly progressing sequence of this motion:
   on its own.
 - 7s: he is completely gone from frame; the door is fully closed, matching
   the end reference image.
+
+The 5s → 6s → 7s stretch is one single, continuous, natural exit — not
+three disconnected snapshots. Each of these panels must look like a direct,
+gradual continuation of the one before it: his position, stride, and how
+much of him is cropped by the frame edge should progress smoothly and
+believably from "clearly visible, angling right" (5s) through "partway
+occluded, still mid-stride" (6s) to "fully gone, door settled shut" (7s).
+Avoid any panel-to-panel jump that looks like a cut or a teleport — imagine
+this as flipping through consecutive frames of one real walk out the door,
+not picking three unrelated moments.
 
 Camera position/framing, background, and character design must stay
 consistent across all 8 panels — this is one continuous scene, not 8
