@@ -29,7 +29,9 @@
 - [x] 끝 프레임 v9 결과 확인 → 성공. 뒷모습 전환, 문 열림, 문턱 근처 위치, 배경/소품 일관성 모두 확인됨. **시작/끝 프레임 최종 확정.**
 - [x] 영상 연결 프롬프트(Veo 3.1 Lite) 컨셉 제안 → 사용자 승인(BGM 잔잔 + 효과음만, 대사/텍스트 없음) → v1 프롬프트 작성 완료
 - [x] v1 영상 결과를 2fps로 프레임 분석 → 문 열림/닫힘 반복, 제자리걸음(실제 이동 없음), 소품(종이박스) 깜빡임 3가지 문제 발견 → "절대 하면 안 되는 것"을 명시하는 CRITICAL RULES 추가해 v2로 재작성
-- [ ] 사용자가 Flow(Veo 3.1 Lite)에서 v2 프롬프트로 8초 영상 재생성 후 결과 확인
+- [x] 사용자 피드백: 끝 프레임(v9)이 "문턱 근처"까지만이라 도착점이 약해서 영상이 끝까지 자연스럽게 안 이어짐 → 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 v10 재작성
+- [ ] 끝 프레임을 v10 프롬프트로 재생성 후 결과 확인
+- [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -74,53 +76,54 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v9)
-> **구도 자체를 재검토(사용자 지적)**: 문이 캐릭터 뒤쪽(배경)에 있는 구도이므로, 문 쪽으로 걸어간다는 건 **카메라에서 멀어지며 몸을 돌려 등을 보이는 것**이 물리적으로 맞음. v7(줌인)·v8(정면 유지)은 방향 자체가 잘못된 접근이었음. 뒷모습이면 FACE LOCK 문제도 사라지고, "멀어지며 작아짐"은 줌인처럼 눈속임이 아니라 정당한 원근 변화라 서사에도 맞음.
-> **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임 이미지(문 닫힘, 정면), 참고용 2장
+## ② 끝 프레임 (나노바나나 프롬프트, v10)
+> **v9 결과 자체는 반영됐으나(뒷모습, 문 열림) "문턱 근처" 정도라 도착점이 약함** — 영상 생성 시 8초 안에 애매하게 조금만 이동하고 마는 문제(문 열림/닫힘 반복, 제자리걸음)로 이어짐. 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 더 명확한 도착점으로 재작성. 뒷모습 유지라 FACE LOCK 불필요.
+> **첨부**: 캐릭터 참조 이미지 + v9 결과물(뒷모습, 문턱 근처 이미지)을 베이스로 사용
 
 ```
-Using the second reference image (the confirmed start frame photo) for the
-character's exact colors, fur texture, and the room's exact background,
-door design, and lighting — but this is a full new photograph of a later
-moment in the same continuous scene, from the exact same fixed camera
-position (do not move the camera).
+Using the second reference image (the confirmed v9 photo) as the base for
+character identity, colors, and the room/door style — but this is a new
+photograph capturing a moment slightly later: Chang-su has now walked all
+the way through the doorway and is standing outside, past the threshold,
+on the outdoor landing/walkway.
 
-THE SCENE, a few seconds later:
-Chang-su has turned around and is now walking away from the camera, toward
-the open front door. We now see him from BEHIND — the back of his round
-head (dark navy-gray fur, no face visible), his back and rounded body,
-and his short legs mid-stride. He is noticeably further from the camera
-than his starting position — smaller in the frame due to the natural
-distance, positioned close to or just stepping through the open doorway,
-with a hint of the outside space beyond the door visible around/past him.
+REQUIRED CHANGE (must be clear and unmistakable): He is now fully outside
+the house — both feet past the door threshold, standing on the outdoor
+landing beyond it. Because he is now framed by the doorway itself and a
+little farther from camera, he appears somewhat smaller in the frame than
+in the base image, with more of the door frame and interior wall visible
+around him, and more of the outdoor scenery (sky, railing, neighboring
+building) visible beyond/around him.
 
-His body is leaning slightly, visibly working to keep his balance with the
-load — a natural mid-walk wobble, not exaggerated or cartoonish.
+Still seen from BEHIND — the back of his round head (dark navy-gray fur,
+no face visible), his back and rounded body, short legs. Still carrying
+the exact same two items in the same relative arrangement: the tied
+cardboard bundle with the mesh bag of cans hooked to it on one side, the
+clear bag of PET bottles on the other side — nothing added or dropped.
 
-He is still carrying the exact same three items, now seen from behind:
-the tied cardboard bundle and the mesh bag of cans hooked on top of it on
-one side, the clear bag of PET bottles on the other side — same items,
-same relative arrangement, nothing added or dropped.
+His body is upright and steady now, no more wobble — he has successfully
+made it outside without dropping anything. A settled, composed stance,
+task accomplished.
 
-KEEP IDENTICAL: camera position (fixed, do not pan or move), the
-entryway/hallway background, shoe rack, wall color, lighting, and color
-tone. Door is open (the start frame's door was closed). The back of his
-head/fur must match the reference image's colors and texture exactly — no
-added markings, patterns, or accessories.
-
-Expression: not visible (back view) — no expression to manage.
+KEEP IDENTICAL: camera position (fixed, do not move), interior
+entryway/door design and colors, lighting mood, overall color tone.
 
 OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
   the reference image.
 - Do not add any clothing, costume, accessories, or props on his body
-  beyond the three recycling items already described.
+  beyond the two items already described.
 - No text, no logos, no watermark.
 ```
 
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v9 (끝 프레임) — 뒷모습 전환 자체는 성공했으나 "문턱 근처"라 도착점이 약함
+- 결과: 뒷모습, 문 열림, 배경/소품 일관성 모두 확인되어 한때 "최종 확정"으로 기록했으나, 실제 영상(Veo) 생성 결과가 8초 안에 이 애매한 종착점까지도 제대로 못 이어가는 문제(문 열림/닫힘 반복, 제자리걸음)로 이어짐.
+- 교훈: 끝 프레임이 "얼추 도착"이 아니라 **명확하게 완료된 상태**(완전히 문 밖으로 나감)여야 영상 모델이 갈 방향을 더 뚜렷하게 잡음. 프레임 단위 검증 통과 ≠ 실제 영상화까지 잘 됨 — 영상 생성 결과까지 보고 나서 최종 확정해야 함.
+- 프롬프트 전체 텍스트: 위 v10 항목의 "v9 결과 자체는 반영됐으나..." 참고, 또는 이전 대화 기록 참고.
 
 ### v8 (끝 프레임) — 시도 전 폐기. 구도(카메라-캐릭터-문 배치) 자체가 잘못됨을 사용자가 지적
 - 문이 배경(캐릭터 뒤)에 있는 구도이므로, "정면 유지한 채 앞으로 이동"은 애초에 물리적으로 맞지 않는 요청이었음(정면 유지하려면 뒷걸음질쳐야 함). v9에서 뒷모습으로 전환.
