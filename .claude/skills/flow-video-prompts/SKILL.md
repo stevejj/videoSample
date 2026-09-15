@@ -94,6 +94,32 @@ other way around.
    into a list of rules. State hard constraints as CRITICAL RULES, phrased as
    conditions ("X only happens after Y is 100% true"), not as time cues
    ("near the end").
+   - **Ask which Flow generation mode the user wants: "Frames to Video" or
+     "Ingredients to Video" ("소재").** They write differently. Frames to
+     Video auto-interpolates between the start/end images, so the prompt
+     only needs to describe the motion between them. Ingredients mode gives
+     no such guarantee — the reference images (which can now include the
+     storyboard grid itself as a third image) are style/staging references
+     only, so the prompt must explicitly state that the video's opening and
+     closing frames must match reference images 1 and 2, and must explain
+     each reference image's role (1st = opening frame, 2nd = closing frame,
+     3rd = per-second storyboard grid to follow, staged as smooth continuous
+     motion rather than jumping between the 8 panels). Ingredients mode's
+     upside is that the grid — already validated second-by-second — becomes
+     a much stronger anchor than describing the same beats in text alone.
+   - **Before reusing a previously-confirmed reference image (especially a
+     storyboard grid) in a new context, re-check it against every logic fix
+     found since it was confirmed.** Scene 1's grid was confirmed before the
+     body-orientation contradiction in step 2 was discovered and fixed in
+     the video prompt — the grid's own panels still depicted the disproven
+     "already turned around, pushing with the back" pose. That was harmless
+     while the grid was only a human sanity-check, but became a real risk
+     once ingredients mode would feed the grid directly into video
+     generation: reference images are known to outweigh text instructions
+     (see the prop left/right mirroring failures), so a stale grid could
+     drag the video back into the exact orientation bug the text was trying
+     to prevent. Regenerating the grid (free) to match the current, corrected
+     script is worth doing before it becomes a direct generation input.
 9. **After the user shares the generated .mp4, extract frames at ~2fps and
    inspect every one before judging the result** — don't just skim the first
    and last frame. See "Verifying a generated video" below for the exact

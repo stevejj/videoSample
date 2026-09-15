@@ -48,7 +48,10 @@
 - [x] v9 영상 결과를 2fps로 프레임 분석 → 최종 상태(문 닫힘/빈 방)는 정확했지만, 문 미는 동작에 시간을 너무 많이 써서(0~4초) 캐릭터가 거의 안 움직이다가 5.5~6초에 급하게 이동을 몰아 처리하며 옆모습 노출 글리치 발생 → 문 미는 구간에 절대 시간 상한 명시, 2~6초 구간에 "매초 이동 필수" 규칙 추가한 v10 재작성
 - [x] v10 시도 전, 사용자가 물리적 모순 지적: "뒤돌아서 등으로 민다"는 뒤돈 순간 정면이 문을 향하게 되어 등으로 미는 게 불가능한 지시였음 → 뒤돌기를 미는 동작 뒤(3초)로 옮기고, 미는 동안엔 정면을 유지한 채 뒷걸음질로 등을 대는 구조로 v11 재작성
 - [x] v11 영상 결과를 2fps로 프레임 분석 → 몸 방향 논리 자체는 문제없었으나 **실행 타이밍이 드리프트**: (1) "1s-2s 정면 유지"가 지켜지지 않고 1s부터 이미 옆모습으로 돌아가버려 등으로 미는 장면 자체가 제대로 안 잡힘, (2) 3s에 회전은 했지만 3~4.5초 구간이 "매초 이동" 규칙에도 불구하고 거의 정지 상태로 렌더링되어 문턱을 못 넘고 안쪽에 머무름(사용자 피드백과 일치) → 추상적 "매초 이동" 규칙 대신 도어매트/문턱/난간 같은 **구체적 랜드마크에 위치를 고정**하고, 회전 전 구간에 "프로필 금지" 부정 제약을 추가한 v12 재작성
-- [ ] 영상을 v12 프롬프트로 재생성 후 결과 확인
+- [x] 사용자가 생성 방식을 "시작/끝 프레임(Frames to Video)"에서 **"소재(Ingredients to Video)"**로 전환 결정 → v12는 테스트 전에 폐기, 참조 이미지 역할을 명시하는 구조로 v13 재작성
+- [x] 소재 모드 전환 중 확정 그리드(v5)를 재검토 → **1초 패널이 물리적으로 모순된 구버전 로직("이미 뒤돈 채 등으로 밀기")을 담고 있음을 발견**(v9→v11 사이에 고친 것과 동일 버그). 소재 모드에서는 그리드가 직접 참조 이미지로 들어가 텍스트 지시보다 강하게 작용할 수 있어 위험 → 고쳐진 로직(1s-2s 정면 유지, 3s 1회 회전)에 맞춘 그리드 v6 작성, 재생성 필요
+- [ ] 그리드를 v6 프롬프트로 재생성 후 결과 확인
+- [ ] 영상을 v13 프롬프트(소재 모드, 참조 이미지 3장: 시작/끝 프레임 + 그리드 v6)로 생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -299,7 +302,98 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v12)
+> **그리드 v5는 물리적으로 모순된 구버전 로직을 담고 있음 — 소재(Ingredients) 모드 전환 전 v6로 재생성 필요**: v5 그리드의 1초 패널은 "이미 뒤돈 상태(등이 카메라 쪽)로 등으로 민다"로 만들어졌는데, 이는 이후 영상 프롬프트 작업 중(v9→v11) 발견한 물리적 모순(뒤돈 순간 정면이 문을 향하게 되어 등으로 미는 게 불가능)과 동일한 버그다. 그리드가 사람이 눈으로 확인하는 용도로만 쓰일 때는 문제가 드러나지 않았지만, **"소재" 모드에서는 그리드 이미지 자체가 영상 생성에 직접 참조 이미지로 들어가므로**, 텍스트 프롬프트가 "정면 유지"라고 명시해도 참조 이미지가 보여주는 구버전 자세(조기 회전)로 끌려갈 위험이 큼("참조 이미지가 텍스트 지시보다 강함" — 소품 좌우 반전 실패 사례 참고). 영상 프롬프트(v12)에서 이미 고친 로직(1s-2s 정면 유지, 3s에 딱 한 번 회전 + 랜드마크 체크포인트)에 맞춰 그리드도 다시 만들어야 함.
+
+```
+Using the three reference images — the first is Chang-su's character
+reference (for exact face/eye/fur consistency), the second is the confirmed
+start frame, the third is the confirmed end frame — plus the motion
+description below, generate ONE new image: a storyboard grid of 8 panels
+arranged in 2 columns x 4 rows, laid out in reading order (left-to-right,
+top-to-bottom), representing a snapshot of the scene at each second from 0
+through 7 of an 8-second continuous shot.
+
+Panel order and timing:
+- Row 1: 0s (top-left), 1s (top-right)
+- Row 2: 2s, 3s
+- Row 3: 4s, 5s
+- Row 4: 6s, 7s
+
+Each panel shows a small, clearly readable number label in one corner
+("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
+
+Panel 0s must match the start reference image exactly. Panel 7s should be
+close to the end reference image. In every panel, the character's face, fur
+color/texture, and proportions must match the character reference image —
+do not let appearance drift across panels. The panels in between should
+show a plausible, smoothly progressing sequence of this motion:
+- 0s: Chang-su faces the camera, holding the recycling load, door closed.
+  His torso and face point straight at the camera.
+- 1s (MOST IMPORTANT MOMENT): he is STILL fully facing the camera — no
+  turning, no profile, no 3/4 angle. He has stepped backward so his back
+  presses against the door, and is leaning his whole body weight back,
+  pushing hard against the door with his back, straining, legs pushing
+  against the floor for leverage. His face is still toward the camera
+  (his head may tilt down slightly with visible effort, but his torso
+  does not rotate). He must NOT be shown in profile or back-view here —
+  showing him already turned around at this point is a failure state.
+- 2s: he is STILL fully facing the camera, same orientation as 1s — no
+  rotation yet. The push has finished and the door has swung open,
+  already fully open by this panel. The door itself is completely
+  undamaged and unmarked, simply opening on its hinge like normal; it
+  must NOT show any cracks, fractures, or damage of any kind.
+- 3s: NOW, for the first time, he has turned around so his back fully
+  faces the camera, and his leading foot is already past the door's
+  threshold line, stepping onto the outdoor landing. Face NOT visible
+  from this point on. Still carrying the exact same two items, clearly
+  visible in his wings.
+- 4s: he is now clearly on the outdoor landing, roughly at the depth of
+  the railing, walking forward. Still seen from BEHIND, face NOT visible,
+  still carrying the same two items.
+- 5s: Still seen from BEHIND — his face is NOT visible, his back is still
+  fully to the camera (do not let him face camera again). He is
+  continuing to walk with his path curving toward screen-RIGHT, now past
+  the railing's midpoint, positioned off-center toward the right side of
+  the frame. Still carrying the same two items.
+- 6s: Still seen from BEHIND, face NOT visible. He is almost completely
+  exited — MORE THAN HALF of his body is already cropped off by the right
+  edge of the frame, only a small portion (part of his back/head) still
+  visible, still carrying what's visible of the two items. The door is
+  STILL OPEN at this point — it has not started closing yet.
+- 7s: he is completely gone from frame — no part of him visible anywhere.
+  Only now does the door swing fully shut on its own, matching the end
+  reference image exactly.
+
+The 3s → 4s → 5s → 6s → 7s stretch is one single, continuous, natural exit
+— not disconnected snapshots. Each panel must look like a direct, gradual
+continuation of the one before it: his position, stride, and how much of
+him is cropped by the frame edge should progress smoothly and believably.
+Avoid any panel-to-panel jump that looks like a cut or a teleport, and
+avoid any panel where he suddenly faces the camera again — once he turns
+at 3s, his back stays to the camera for every remaining panel until he is
+fully gone. Likewise, avoid any panel before 3s where he appears turned or
+in profile — before 3s he is always fully front-facing, only his posture
+changes (standing, then leaning/straining into the push). Imagine this as
+flipping through consecutive frames of one real sequence, not picking
+unrelated moments.
+
+Camera position/framing, background, and character design must stay
+consistent across all 8 panels — this is one continuous scene, not 8
+separate images. Thin white borders/gutters between panels are fine so they
+don't blend together.
+
+No other text, logos, or watermarks besides the second-number labels.
+```
+
+### v5 그리드 (참고용, 사용자 확인 완료했으나 이후 물리적 모순 발견되어 v6로 대체 필요)
+> 0~4초 진행/2초 관용구/5초 뒷모습 유지/소품 유지/6초 타이밍 문제는 모두 해결되어 사용자가 확인한 버전이지만, **1초 패널의 "이미 뒤돈 채 등으로 밀기" 자체가 이후 발견된 물리적 모순을 담고 있음**. 소재 모드로 전환하며 v6로 대체.
+```
+(v5 그리드 프롬프트 전체 텍스트는 위 v6 항목 직전, 이 파일의 git 히스토리 참고)
+```
+
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v13 — "소재/Ingredients" 모드용)
+> **모드 전환**: "시작/끝 프레임 → Frames to Video"에서 **"소재(Ingredients to Video)"** 방식으로 전환. 시작 프레임, 끝 프레임, 확정된 스토리보드 그리드(v6, 위 참고) 3장을 모두 참조 이미지로 첨부하고, 텍스트 프롬프트로 세 이미지의 역할과 초 단위 진행을 명시하는 구조.
+> **Frames to Video와의 핵심 차이**: Frames to Video는 시작/끝 이미지 사이를 모델이 알아서 보간(interpolate)하지만, 소재 모드는 그런 보장이 없음 — 참조 이미지들은 스타일/구도/외형 참고 자료일 뿐, "영상이 반드시 이 이미지로 시작하고 이 이미지로 끝나야 한다"는 것도 텍스트로 명시해야 함. 대신 **스토리보드 그리드를 세 번째 소재로 직접 넣을 수 있다는 장점**이 있음 — 그리드가 이미 8개 패널로 초 단위 진행을 시각적으로 확정해놓았으므로, 텍스트만으로 매초 상태를 설명하던 것보다 훨씬 강력한 앵커가 될 수 있음(단, 그리드 자체가 정확해야 함 — 위 v6 재생성 이유 참고).
 > **v11 영상 결과 분석(2fps)**: 몸 방향 논리(정면 유지하며 등으로 밀기 → 문 열린 후 1회 회전)는 물리적으로 문제없었고 실제로 그 순서를 어긴 렌더링 붕괴도 없었음. 하지만 **지시가 지켜지지 않고 타이밍이 드리프트하는 별개의 문제**가 발견됨:
 > 1. **1s 시점에 이미 옆모습(프로필)으로 돌아가 있음** — "1s-2s 동안 정면 유지"라고 명시했는데도 회전이 훨씬 일찍(사실상 즉시) 시작되어, 정작 "등으로 문을 밀어서 여는" 씬의 핵심 장면이 정면이 아니라 옆모습으로 뭉개져서 나옴. 이게 사용자가 지적한 **문제 1("문을 등으로 바깥으로 밀어야 한다")**의 원인.
 > 2. **3s에 회전은 정상적으로 일어났지만, 그 이후 3~4.5초 구간에서 캐릭터가 문턱 근처에 거의 정지된 채로 멈춰있음** — "매초 눈에 띄게 이동해야 한다"는 규칙이 있었는데도 지켜지지 않음. 그러다 5~6.5초에 뒤늦게 오른쪽으로 몰아서 이동. 실제로는 문을 통과해서 바깥 랜딩으로 나간 게 아니라 문턱 안쪽/문 앞에서 정지했다가 뒤늦게 옆으로 빠져나가는 것처럼 보임. 이게 사용자가 지적한 **문제 2("문을 열기만 하고 안쪽에서 오른쪽으로 걸어가고 있음")**의 원인.
@@ -332,14 +426,31 @@ No other text, logos, or watermarks besides the second-number labels.
 > 3. **"문이 닫히는 타이밍"이 "캐릭터 퇴장"과 연동되어 있지 않음** — "끝나갈 때 저절로 닫힌다"고만 해서, 모델이 캐릭터 이동은 못 맞추면서 문 닫힘 타이밍만 시간 기준으로 지켜버림(캐릭터가 아직 안에 있는데 문이 닫힘). "캐릭터가 완전히 퇴장한 다음에만" 닫히라고 조건부로 명시 필요.
 
 ```
-An 8-second continuous shot, camera completely static — no panning, no
-zooming, no cuts — fixed in the entryway of an ordinary home, facing the
-front door. Visible landmarks in this fixed shot: the doormat directly in
-front of the door, the door's own threshold line, and (once the door is
-open) a railing out on the landing beyond it. Use these landmarks as fixed
-position checkpoints — they do not move, only Chang-su moves relative to
-them.
+Using the three uploaded reference images as the basis for this video:
+- The FIRST image is the exact opening moment of this video. The video
+  must begin matching it essentially exactly — same character pose, same
+  items in his wings, same closed door, same camera framing.
+- The SECOND image is the exact final moment of this video. The video must
+  end matching it essentially exactly — the same empty entryway with the
+  door fully closed, no character visible anywhere.
+- The THIRD image is an 8-panel storyboard grid (2 columns x 4 rows, read
+  left-to-right top-to-bottom, labeled 0s through 7s) that shows exactly
+  what happens in every second between the first and second image. Treat
+  this grid as the authoritative second-by-second script for this video —
+  every panel's pose, camera framing, door state, and character position
+  must be reproduced at its labeled second, staged as smooth, continuous,
+  natural 24fps motion rather than jumping between 8 discrete snapshots.
+  Do not invent a different motion than what the grid shows.
 
+Generate an 8-second continuous video, camera completely static — no
+panning, no zooming, no cuts — fixed in the entryway of an ordinary home,
+facing the front door, matching the framing of all three reference images.
+Visible landmarks in this fixed shot: the doormat directly in front of the
+door, the door's own threshold line, and (once the door is open) a railing
+out on the landing beyond it. Use these landmarks as fixed position
+checkpoints — they do not move, only Chang-su moves relative to them.
+
+Follow the storyboard grid (third image) second by second:
 - 0s: Chang-su faces the camera, holding a heavy load of recycling (a tied
   cardboard bundle with a mesh bag of cans hooked to it in one
   wing-flipper, a clear bag of PET bottles in the other). Door closed,
@@ -417,6 +528,17 @@ screen door, or any door-like structure of any kind visible in the
 exterior — just a normal outdoor space.
 
 CRITICAL RULES (do not violate these):
+- The video's opening frame must match the FIRST reference image
+  essentially exactly, and the video's closing frame must match the
+  SECOND reference image essentially exactly. Do not drift away from
+  either reference image's pose, framing, or state.
+- The storyboard grid (third reference image) is the authoritative source
+  for what happens at each second — do not invent a different motion,
+  pose, or staging than what it shows, even if it would otherwise seem
+  reasonable. Where this text and the grid appear to conflict, the grid's
+  visual staging for orientation/pose takes precedence, but the explicit
+  timing/checkpoint rules below (which refine the grid with lessons from
+  prior failed attempts) must still be followed.
 - Chang-su does NOT turn around to push the door. He pushes it open with
   his back while still facing generally toward the camera (backing into
   it) — turning around first and then pushing with his back is physically
@@ -481,6 +603,70 @@ he pushes the door with his back, a door creak as it opens, footsteps
 fading as he walks away, and a soft door-closer click/thud as the door
 swings shut on its own near the end. NO dialogue, NO voiceover, NO
 on-screen text or captions.
+```
+
+### v12 (참고용, Frames to Video 모드용 — 아직 테스트 전, 소재 모드로 전환하며 v13으로 대체)
+> v11의 2fps 분석 결과(방향 드리프트 + 문턱 정지)를 고쳐서 작성했으나, 사용자가 생성 방식을 "시작/끝 프레임(Frames to Video)"에서 "소재(Ingredients to Video)"로 바꾸기로 하면서 실제 테스트 없이 v13으로 대체됨. 랜드마크 체크포인트/프로필 금지 로직 자체는 v13에 그대로 이어짐 — 차이는 참조 이미지(그리드 포함) 활용 방식과 프롬프트 서두 구조뿐.
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home, facing the
+front door. Visible landmarks in this fixed shot: the doormat directly in
+front of the door, the door's own threshold line, and (once the door is
+open) a railing out on the landing beyond it. Use these landmarks as fixed
+position checkpoints — they do not move, only Chang-su moves relative to
+them.
+
+- 0s: Chang-su faces the camera, holding a heavy load of recycling (a tied
+  cardboard bundle with a mesh bag of cans hooked to it in one
+  wing-flipper, a clear bag of PET bottles in the other). Door closed,
+  directly behind him. His torso and face are pointed straight at the
+  camera.
+- 1s (MOST IMPORTANT MOMENT — brief but forceful, NOT slow): his torso and
+  face are STILL pointed straight at the camera, exactly as at 0s — no
+  rotation, no turning, not even a partial turn. He takes a step backward
+  so his back presses against the door, then leans his whole body weight
+  back and pushes hard against the door with his back, straining, legs
+  pushing against the floor for leverage. He must NOT be shown in
+  profile, 3/4 view, or any angle other than fully front-facing at this
+  moment — if his body appears to be turning or angled to the side at 1s,
+  that is a failure state.
+- 2s: he is STILL fully front-facing the camera, same as 1s — still no
+  rotation. The push finishes and the door swings open outward, away from
+  him and away from the camera — by the END of this second the door must
+  already be fully open. The door itself is completely undamaged and
+  unmarked, simply opening on its hinge like normal — it must NOT show any
+  cracks, fractures, or damage of any kind. THE DOOR-PUSH BEAT IS NOW
+  OVER — it must not continue into 3s.
+- 3s: NOW, for the first (and only) time, he turns his body around so his
+  back fully faces the camera, and immediately steps forward through the
+  open doorway. By the END of this second, his leading foot must already
+  be past the door's threshold line — physically standing on the outdoor
+  landing surface, not merely turned around while still standing on the
+  doormat. Face NOT visible from this point on. Still carrying the exact
+  same two items, clearly visible in his wings.
+- 3.5s: both feet are now on the outdoor landing surface, clearly past the
+  threshold line, with the doorway frame visibly behind him. He is not
+  lingering at the threshold — standing at or just inside the threshold
+  at this point is a failure state, even if his body has already turned.
+- 4s: he has taken several more steps onto the landing and is now roughly
+  at the same depth as the railing, clearly and unmistakably farther from
+  the door than at 3.5s. Still seen from BEHIND, face NOT visible, still
+  carrying the same two items.
+- 4.5s-5s: continuing to walk on the landing, now visibly curving his path
+  toward screen-RIGHT, moving past the midpoint of the railing toward its
+  right end. Clearly farther right than at 4s. Still seen from BEHIND,
+  back fully to camera — do NOT let him turn or show his face here.
+- 5.5s-6s: he is near the right end of the railing, almost completely
+  exited — MORE THAN HALF of his body is already cropped off by the right
+  edge of the frame, only a small portion still visible. The door is
+  STILL OPEN at this point — it has not started closing yet. Still seen
+  from BEHIND, face NOT visible — he must not spin or jerk toward camera
+  to cover distance quickly.
+- 6.5s-7s: he is completely gone from frame — no part of him visible
+  anywhere. Only now does the door's self-closing hinge mechanism swing it
+  fully shut on its own, arriving closed by the very end of the clip.
+
+(나머지 CRITICAL RULES/오디오 등은 v13과 랜드마크 체크포인트 부분 제외 동일 — 전체 텍스트는 git 히스토리 참고)
 ```
 
 ### v11 (참고용, 2fps 분석 결과 실패) — 방향 논리는 맞았으나 타이밍 드리프트(프로필 조기 회전 + 문턱에서 정지)
