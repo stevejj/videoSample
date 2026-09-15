@@ -24,7 +24,8 @@
 - [x] 끝 프레임 v4 결과 확인 → 실패. 문도 안 열리고 포즈도 거의 그대로라 시작 프레임과 사실상 동일 → "변화 요청"을 최상단에 강조하는 구조로 v5 재작성
 - [x] 끝 프레임 v5 결과 확인 → 부분 성공. 문은 열렸지만(성공) 캐릭터 위치/기울임은 여전히 거의 그대로(실패) → 요구사항을 "이동"이라는 단일 핵심 변화로 좁히고, v5 결과물(문 열림)을 새 베이스로 삼아 v6 재작성
 - [x] 끝 프레임 v6 결과 확인 → 실패. 문이 더 열리긴 했으나 캐릭터 위치는 또 그대로 → **접근 방식 자체를 "제자리 이동" → "카메라 줌인/거리 변화"로 전환**하여 v7 재작성 (아래 "위치 이동 대신 카메라 거리 변화" 참고)
-- [ ] 끝 프레임을 v7 프롬프트로 재생성 (캐릭터 참조 + v6 결과물 2장 첨부)
+- [x] 끝 프레임 v7 결과 확인 → 카메라 줌인/프레이밍 변화 자체는 성공(캐릭터 확대, 문/신발장 크롭됨). 하지만 **사용자 피드백으로 반려**: "나간다"는 서사를 줌인으로 대체하면 안 됨 — 캐릭터의 실제 이동/자세 변화로 표현해야 함. 접근 전환을 되돌리고, 카메라/줌은 완전히 고정한 채 **다리·발 위치를 문자 그대로 지정하는 구체적 포즈 묘사**로 v8 재작성
+- [ ] 끝 프레임을 v8 프롬프트로 재생성 (캐릭터 참조 + 확정된 시작 프레임 이미지 2장 첨부, 베이스를 시작 프레임으로 되돌림)
 - [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -70,52 +71,59 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v7)
-> **접근 전환**: v4~v6까지 "같은 구도 유지 + 캐릭터 위치만 이동"을 계속 요청했지만 매번 위치가 거의 안 바뀌었음. 카메라가 문(바깥) 방향에서 그를 바라보는 구도라, "문밖으로 나간다"는 사실상 "카메라 쪽으로 가까워진다"는 뜻인데, 모델이 "배경/구도 유지" 지시를 픽셀 단위로 지키려다 보니 인물 이동 자체를 무시하는 패턴이 반복됨. 그래서 "제자리에서 옮겨라"가 아니라 **"카메라는 그대로, 그가 다가와서 화면에 더 크게 잡힌다"는 줌인/프레이밍 변화**로 요청 방식을 바꿈.
-> **첨부**: 캐릭터 참조 이미지 + v6 결과물(문 많이 열린 이미지)을 베이스로 첨부
+## ② 끝 프레임 (나노바나나 프롬프트, v8)
+> **접근 재전환(사용자 피드백)**: v7의 카메라 줌인은 구도 변화 자체는 성공했지만, "나간다"는 서사를 줌인으로 대체하는 건 잘못된 접근이라는 피드백을 받음. 카메라/줌은 완전히 고정하고, 대신 **다리·발 위치를 문자 그대로 지정**해서 실제 걷는 중 자세를 강제하는 방식으로 되돌림.
+> **첨부**: 캐릭터 참조 이미지 + **확정된 시작 프레임 이미지**(v4, 문 닫힘 상태)를 다시 베이스로 사용
 
 ```
-Using the second reference image (the latest attempt photo) as the base
-for character identity, colors, and style — but this is a full
-recomposition of the shot, not a small pixel-level edit.
+Using the second reference image (the confirmed start frame photo) only as
+a STYLE AND IDENTITY reference — for the character's exact look, the
+room's exact background, lighting, and camera position/angle. Do NOT
+treat this as an image to lightly edit; instead, generate a brand new
+photograph of a later moment in the same continuous scene, from the exact
+same fixed camera position and framing.
 
-REQUIRED CHANGE — CAMERA PUSH-IN (the single most important change):
-Chang-su has walked forward through the doorway and is now much closer to
-the camera than in the base image, as if the camera stayed in place while
-he approached it. He must appear noticeably larger in the frame — roughly
-25-35% bigger/taller than in the base image. Because he is closer to
-camera: the top of the door frame is now partially cropped out of frame or
-only visible at the very top edge, and the shoe rack on the side is now
-mostly or fully out of frame (he has walked past it). This must be an
-unmistakable, obvious change in framing and scale compared to the base
-image — NOT the same wide shot with him standing in the same spot.
+THE SCENE, a few seconds later:
+Chang-su has walked most of the way across the entryway toward the door.
+He is now standing right at the doorway threshold, front door open in
+front of him. His front foot is planted right at the threshold line, his
+back foot is still lifting off the doormat behind him — a clear mid-stride
+walking pose, NOT a static standing pose. His torso is leaning forward and
+tilted to counterbalance the load, visibly different from the upright
+standing posture of the earlier moment.
 
-His body is tilted/leaning to counterbalance the load, mid-stride, a
-natural subtle wobble. NOT exaggerated or cartoonish.
+This must read as an unmistakably different body position — a character
+actually caught mid-walk, weight shifted onto the front foot, back leg
+trailing behind. If someone compares this to the base image, the leg/foot
+positions and body lean must obviously differ, not just a near-identical
+standing pose.
 
-KEEP THE SAME STYLE as the base image:
-- Same three recycling items in the same positions: tied cardboard bundle
-  under one wing-flipper, clear bag of PET bottles in the other
-  wing-flipper, mesh bag of cans hooked on top of the cardboard bundle.
-- Same lighting mood, color tone, and character colors/fur texture.
-- Whatever entryway/hallway background is now visible at this closer
-  camera distance should still look consistent with the same home.
+He is still carrying the exact same three items, in the same positions:
+tied cardboard bundle under one wing-flipper, clear bag of PET bottles in
+the other wing-flipper, mesh bag of cans hooked on top of the cardboard
+bundle — nothing added, nothing dropped.
 
-Expression: natural and understated, a touch more visible effort than the
-base image. Subtle, NOT exaggerated or cartoonish.
+KEEP IDENTICAL: camera position, framing, and zoom level — do NOT move the
+camera closer or further from the subject, use the exact same shot size as
+the reference image. Same background, entryway layout, shoe rack, wall
+color, lighting, color tone. Door is open (as opposed to the start frame's
+closed door).
+
+Expression: natural and understated, a touch more visible effort than
+before. Subtle, NOT exaggerated or cartoonish.
 
 FACE LOCK (highest priority, do not deviate):
-- The face must exactly match the reference images: large, round,
-  wide-set eyes that take up a big portion of the face, each with one
-  bright round catchlight, dark eye color.
+- The face must exactly match the reference image: large, round, wide-set
+  eyes that take up a big portion of the face, each with one bright round
+  catchlight, dark eye color.
 - NO eyebrows of any kind. Smooth dark head fur directly above the eyes,
   nothing resembling an eyebrow shape, line, or furrow.
 - Keep the exact same round head shape, face proportions, orange beak
-  shape and size, and fur coloring as the reference images.
+  shape and size, and fur coloring as the reference image.
 
 OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
-  the reference images.
+  the reference image.
 - Do not add any clothing, costume, accessories, or props on his body
   beyond the three recycling items already described.
 - No text, no logos, no watermark.
@@ -124,6 +132,11 @@ OTHER CONSTRAINTS:
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v7 (끝 프레임) — 카메라 줌인으로 대체 → 구도 변화는 성공했으나 서사상 반려
+- 결과: 캐릭터가 확대되고 문/신발장이 크롭되어 "가까워짐"은 시각적으로 성공. 하지만 포즈 자체는 거의 그대로(제자리 서있는 자세 확대일 뿐), 그리고 사용자가 "이건 실제 이동이 아니라 카메라 트릭이라 서사에 안 맞는다"고 반려.
+- 교훈: 기술적으로 더 잘 먹히는 방법이라도 스토리 의도와 안 맞으면 채택하면 안 됨. **카메라 고정 + 실제 포즈/이동 변화**를 계속 시도하는 게 맞고, 대신 포즈 묘사를 훨씬 더 구체적으로(다리/발 위치 단위) 써야 함 → v8.
+- README `제작 가이드라인`의 "위치 이동 대신 카메라 거리 변화" 항목은 **사용 보류**(기술적으로는 유효하지만 이 프로젝트의 서사 원칙과 충돌할 수 있어 케이스별로 판단 필요).
 
 ### v6 (끝 프레임) — 단일 요구("이동"만)로 좁혔지만 여전히 실패
 - 결과: 문은 더 열렸지만 캐릭터 위치는 또 그대로. "제자리 이동" 요청 자체가 이 구도(카메라가 문/바깥 방향에서 그를 바라봄)에서는 잘 안 통하는 것으로 판단.
