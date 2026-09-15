@@ -22,7 +22,8 @@
 - [x] v4 시작 프레임 결과 확인 → 성공 (눈썹 없음, 눈 크기 정상, 외형/의상/소품 모두 조건 충족)
 - [x] 캐릭터 크기가 문/신발장 대비 다소 큰 편(사람 몸통만한 크기)인 점 확인 — 숏폼 특성상 문제없다고 판단, 크기 앵커 문구 추가 없이 현재 상태로 진행하기로 결정
 - [x] 끝 프레임 v4 결과 확인 → 실패. 문도 안 열리고 포즈도 거의 그대로라 시작 프레임과 사실상 동일 → "변화 요청"을 최상단에 강조하는 구조로 v5 재작성
-- [ ] 끝 프레임을 v5 프롬프트로 재생성 (캐릭터 참조 + 확정된 시작 프레임 이미지 2장 첨부)
+- [x] 끝 프레임 v5 결과 확인 → 부분 성공. 문은 열렸지만(성공) 캐릭터 위치/기울임은 여전히 거의 그대로(실패) → 요구사항을 "이동"이라는 단일 핵심 변화로 좁히고, v5 결과물(문 열림)을 새 베이스로 삼아 v6 재작성
+- [ ] 끝 프레임을 v6 프롬프트로 재생성 (캐릭터 참조 + v5 결과물인 "문 열린" 이미지 2장 첨부, 베이스 교체됨)
 - [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -68,35 +69,42 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v5)
-> **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임 이미지, 총 2장을 함께 참조로 첨부할 것.
+## ② 끝 프레임 (나노바나나 프롬프트, v6)
+> **첨부**: 캐릭터 참조 이미지 + **v5 결과물("문 열린" 이미지)**을 새 베이스로 첨부. (시작 프레임이 아니라 v5 결과물을 베이스로 씀)
 
 ```
-Using the second reference image (the start frame photo) as the exact base.
+Using the second reference image (the door-open photo) as the exact base.
 
-REQUIRED CHANGES (most important — these must be clearly and visibly
-different from the base image, do not skip or minimize them):
-1. The front door is now open, swung inward, revealing a hint of the
-   outside hallway/light beyond it.
-2. Chang-su has moved forward — one foot is now past the doorway
-   threshold, clearly further along than in the base image.
-3. His body is tilted noticeably further off-balance than in the base
-   image, visibly wobbling/straining to keep the load steady.
-These three changes must be obvious at a glance compared to the base
-image — this is NOT a near-identical repeat of the base image.
+REQUIRED CHANGE (the single most important change — must be large and
+unmistakable, do not treat this as a subtle or minor adjustment):
+Chang-su has physically moved forward by at least one full body-width
+compared to the base image. He is no longer standing on the entryway
+doormat — both feet are now past the door threshold, standing just
+outside in the hallway/landing beyond the door. His position in the frame
+must be clearly, obviously further forward and closer to (or past) the
+doorway than in the base image. If you compare the two images side by
+side, the position difference must be immediately obvious within one
+second of looking — not something you have to look closely to notice.
 
-KEEP IDENTICAL to the base image (everything except the required changes
-above):
-- Same background, entryway layout, wall color, shoe rack, doormat
-  position.
-- Same camera framing and angle, same lighting and color tone.
+As part of this forward movement, his body is tilted/leaning noticeably to
+keep the load balanced, one wing-flipper and its item swinging slightly
+with the motion — a natural mid-stride wobble, not exaggerated or
+cartoonish.
+
+KEEP IDENTICAL to the base image (everything except the required position
+change above):
+- Same background, entryway/hallway details, wall color, lighting, color
+  tone.
+- Same door, now open, in the same open position as the base image.
 - Same three recycling items in the same positions: tied cardboard bundle
   under one wing-flipper, clear bag of PET bottles in the other
   wing-flipper, mesh bag of cans hooked on top of the cardboard bundle —
   nothing added, nothing dropped.
+- Same camera lens/framing style (adjust only what naturally changes
+  because he is now closer to camera / further into the hallway).
 
-Expression: stays natural and understated, with a touch more visible
-effort than the base image. Subtle, NOT exaggerated or cartoonish.
+Expression: stays natural and understated, a touch more visible effort
+than the base image. Subtle, NOT exaggerated or cartoonish.
 
 FACE LOCK (highest priority, do not deviate):
 - The face must exactly match the reference images: large, round,
@@ -112,15 +120,18 @@ OTHER CONSTRAINTS:
 - Do not alter Chang-su's body proportions, colors, or fur texture from
   the reference images.
 - Do not add any clothing, costume, accessories, or props on his body
-  beyond the three recycling items already described. He stays exactly as
-  unclothed/bare as in the reference images — no shirt, no scarf, no hat,
-  nothing extra.
+  beyond the three recycling items already described.
 - No text, no logos, no watermark.
 ```
 
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v5 (끝 프레임) — REQUIRED CHANGES 리스트 3개 → 1개만 반영됨
+- 결과: 문 열림은 성공, 하지만 캐릭터 이동/기울임은 여전히 거의 반영 안 됨.
+- 원인 추정: 요구 변화가 3가지(문/이동/기울임)로 분산되면서 모델이 그중 상대적으로 "쉬운" 변화(문 열기)만 확실히 반영하고 "어려운" 변화(포즈·위치 이동)는 소극적으로 처리한 것으로 보임.
+- 교훈: 요구 변화를 **하나로 좁히고**, 이미 성공한 변화(문 열림)는 새 베이스 이미지 자체에 반영시켜 재확인 요구를 줄이는 게 효과적. "위치가 한눈에 확실히 다르게 보여야 한다"처럼 변화의 크기/기준을 구체적으로 명시.
 
 ### v4 (끝 프레임) — "베이스 유지 + 살짝 편집" 구조 → 변화가 거의 반영 안 됨
 - 결과: 문이 안 열리고, 캐릭터 위치/자세도 시작 프레임과 거의 동일. 시작·끝 프레임이 사실상 같은 사진.
