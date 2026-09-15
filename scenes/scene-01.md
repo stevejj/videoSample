@@ -21,7 +21,8 @@
 - [x] v3 시작 프레임 결과 확인 → 눈썹이 생기고 눈 크기/모양 변형됨 (원인 추정: "furrowed brow" 표현이 눈썹으로 해석됨) → FACE LOCK 블록 추가, 해당 표현 제거 → v4로 재작성
 - [x] v4 시작 프레임 결과 확인 → 성공 (눈썹 없음, 눈 크기 정상, 외형/의상/소품 모두 조건 충족)
 - [x] 캐릭터 크기가 문/신발장 대비 다소 큰 편(사람 몸통만한 크기)인 점 확인 — 숏폼 특성상 문제없다고 판단, 크기 앵커 문구 추가 없이 현재 상태로 진행하기로 결정
-- [ ] 끝 프레임을 v4 프롬프트로 생성 (캐릭터 참조 + 확정된 시작 프레임 이미지 2장 첨부)
+- [x] 끝 프레임 v4 결과 확인 → 실패. 문도 안 열리고 포즈도 거의 그대로라 시작 프레임과 사실상 동일 → "변화 요청"을 최상단에 강조하는 구조로 v5 재작성
+- [ ] 끝 프레임을 v5 프롬프트로 재생성 (캐릭터 참조 + 확정된 시작 프레임 이미지 2장 첨부)
 - [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -67,32 +68,42 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v4)
-> **첨부**: 캐릭터 참조 이미지 + 방금 생성된 시작 프레임 이미지, 총 2장을 함께 참조로 첨부할 것 (배경 어긋남 방지).
+## ② 끝 프레임 (나노바나나 프롬프트, v5)
+> **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임 이미지, 총 2장을 함께 참조로 첨부할 것.
 
 ```
-Using the second reference image (the start frame photo) as the exact base
-— keep the same background, same entryway layout, same camera angle, same
-lighting, same color tone — edit only the character. Chang-su has now
-stepped further forward, one foot past the doorway, front door open. He is
-still carrying the exact same three items as before, in the same
-positions: the tied cardboard bundle under one wing-flipper, the clear bag
-of PET bottles in the other wing-flipper, and the mesh bag of cans hooked
-on top of the cardboard bundle — nothing added, nothing dropped.
+Using the second reference image (the start frame photo) as the exact base.
 
-His body is tilted a bit further off-balance than before, wobbling
-slightly to keep everything steady, but he is clearly managing it without
-anything slipping. His expression stays natural and understated, with a
-touch more visible effort than the start frame — subtle, NOT exaggerated
-or cartoonish.
+REQUIRED CHANGES (most important — these must be clearly and visibly
+different from the base image, do not skip or minimize them):
+1. The front door is now open, swung inward, revealing a hint of the
+   outside hallway/light beyond it.
+2. Chang-su has moved forward — one foot is now past the doorway
+   threshold, clearly further along than in the base image.
+3. His body is tilted noticeably further off-balance than in the base
+   image, visibly wobbling/straining to keep the load steady.
+These three changes must be obvious at a glance compared to the base
+image — this is NOT a near-identical repeat of the base image.
+
+KEEP IDENTICAL to the base image (everything except the required changes
+above):
+- Same background, entryway layout, wall color, shoe rack, doormat
+  position.
+- Same camera framing and angle, same lighting and color tone.
+- Same three recycling items in the same positions: tied cardboard bundle
+  under one wing-flipper, clear bag of PET bottles in the other
+  wing-flipper, mesh bag of cans hooked on top of the cardboard bundle —
+  nothing added, nothing dropped.
+
+Expression: stays natural and understated, with a touch more visible
+effort than the base image. Subtle, NOT exaggerated or cartoonish.
 
 FACE LOCK (highest priority, do not deviate):
 - The face must exactly match the reference images: large, round,
   wide-set eyes that take up a big portion of the face, each with one
   bright round catchlight, dark eye color.
-- NO eyebrows of any kind. The character has smooth dark head fur directly
-  above the eyes with nothing resembling an eyebrow shape, line, or
-  furrow. Do not draw any brow markings.
+- NO eyebrows of any kind. Smooth dark head fur directly above the eyes,
+  nothing resembling an eyebrow shape, line, or furrow.
 - Keep the exact same round head shape, face proportions, orange beak
   shape and size, and fur coloring as the reference images. Do not narrow,
   elongate, or reshape the eyes or face in any way.
@@ -104,14 +115,17 @@ OTHER CONSTRAINTS:
   beyond the three recycling items already described. He stays exactly as
   unclothed/bare as in the reference images — no shirt, no scarf, no hat,
   nothing extra.
-- Do not change anything else in the scene (background, layout, lighting,
-  camera angle, color tone).
 - No text, no logos, no watermark.
 ```
 
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v4 (끝 프레임) — "베이스 유지 + 살짝 편집" 구조 → 변화가 거의 반영 안 됨
+- 결과: 문이 안 열리고, 캐릭터 위치/자세도 시작 프레임과 거의 동일. 시작·끝 프레임이 사실상 같은 사진.
+- 원인 추정: "keep the same background... edit only the character"처럼 **"유지" 지시를 먼저, "변화" 지시를 나중에** 배치하면 모델이 유지 쪽에 더 무게를 둠.
+- 교훈: **"반드시 바뀌어야 할 것"을 프롬프트 최상단에 명확한 리스트로 강조**하고, "이건 베이스 이미지와 거의 동일한 반복이 아니다"라고 명시적으로 못박을 것. "유지할 것" 목록은 그다음 순서로 배치.
 
 ### v3 — 추상적 금지 문구("Do not alter appearance")만 사용 → 실패
 - 결과: 눈썹이 생기고 눈이 작아짐/좁아짐. "a slightly furrowed brow" 표현이 원인으로 추정(브로우=눈썹 연상).
