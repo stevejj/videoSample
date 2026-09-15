@@ -44,17 +44,77 @@ other way around.
    same" language, so isolate what must change from what must stay identical.
 5. **Verify both frames against the checklist in README.md** before handing
    them to the user, and again after they generate them and share the result.
-6. **Write the video-connect prompt** (Veo 3.1 Lite) once both frames are
-   confirmed. Keep the motion to at most 2-3 clearly staged beats; if there's
-   a single emotional/comedic core action, give it its own loud paragraph
-   (e.g. "MOST IMPORTANT MOMENT") rather than letting it blend into a list of
-   rules. State hard constraints as CRITICAL RULES, phrased as conditions
-   ("X only happens after Y is 100% true"), not as time cues ("near the end").
-7. **After the user shares the generated .mp4, extract frames at ~2fps and
+6. **Once both frames are confirmed, ask the user whether to generate a
+   storyboard-grid check before writing the video prompt.** Don't just do
+   this automatically — always ask first. The point is that Nano Banana
+   (images) costs no Flow credits but Veo (video) does, so a free intermediate
+   sanity check catches a bad motion plan before it burns a paid generation.
+   If they say yes, write a storyboard-grid prompt (see "Storyboard grid" below)
+   attaching both confirmed frames as references, have them generate it, and
+   review it together. Iterate on the grid (not the actual video prompt yet)
+   until the per-second progression looks right — same iteration mindset as
+   the frames themselves.
+7. **Write the video-connect prompt (Veo 3.1 Lite) from the confirmed
+   storyboard grid**, not from scratch. Once the grid looks right, the beats
+   in the motion prompt should describe what's actually in each panel — the
+   grid is now the validated spec for what happens second by second, so lean
+   on it rather than re-inventing the motion description independently. (If
+   the user skipped the grid step, fall back to drafting the motion directly
+   from the concept as before.) Keep the motion to at most 2-3 clearly staged
+   beats; if there's a single emotional/comedic core action, give it its own
+   loud paragraph (e.g. "MOST IMPORTANT MOMENT") rather than letting it blend
+   into a list of rules. State hard constraints as CRITICAL RULES, phrased as
+   conditions ("X only happens after Y is 100% true"), not as time cues
+   ("near the end").
+8. **After the user shares the generated .mp4, extract frames at ~2fps and
    inspect every one before judging the result** — don't just skim the first
    and last frame. See "Verifying a generated video" below for the exact
    commands. Report findings with timestamps, then decide whether the
    fix is a wording problem in the prompt or a scope problem in the request.
+
+## Storyboard grid (free pre-check before spending Veo credits)
+
+Once start/end frames are confirmed and the user opts in, write a Nano Banana
+prompt like this (fill in the bracketed parts from the scene's planned
+motion beats):
+
+```
+Using the two reference images (the confirmed start frame and confirmed end
+frame) plus the motion description below, generate ONE new image: a
+storyboard grid of 8 panels arranged in 2 columns x 4 rows, laid out in
+reading order (left-to-right, top-to-bottom), representing a snapshot of the
+scene at each second from 0 through 7 of an 8-second continuous shot.
+
+Panel order and timing:
+- Row 1: 0s (top-left), 1s (top-right)
+- Row 2: 2s, 3s
+- Row 3: 4s, 5s
+- Row 4: 6s, 7s
+
+Each panel shows a small, clearly readable number label in one corner
+("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
+
+Panel 0s must match the start reference image exactly. Panel 7s should be
+close to the end reference image. The panels in between should show a
+plausible, smoothly progressing sequence of this motion:
+[short bullet list of the planned story beats, same beats you'd otherwise
+put straight into the video prompt]
+
+Camera position/framing, background, and character design must stay
+consistent across all 8 panels — this is one continuous scene, not 8
+separate images. Thin white borders/gutters between panels are fine so they
+don't blend together.
+
+No other text, logos, or watermarks besides the second-number labels.
+```
+
+Attach the confirmed start and end frame images as the two references. If the
+grid reveals a problem (motion that doesn't fit the timing, an implausible
+jump between panels, a pose that doesn't make sense), fix it by regenerating
+the grid — this is the cheap place to catch it. Once the user is happy with
+the grid, move to writing the actual video-connect prompt (step 7 above),
+transcribing each panel's state into the corresponding beat of the motion
+description.
 
 ## Prompt-writing patterns worth reusing
 
