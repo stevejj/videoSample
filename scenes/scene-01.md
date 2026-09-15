@@ -217,6 +217,59 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
+## 스토리보드 그리드 프롬프트 (나노바나나, 영상 프롬프트 작성 전 무료 사전 검증)
+> **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임(v4) + 확정된 끝 프레임(v16), 총 3장, 이 순서로.
+> **v1 결과 확인**: 0~4초 흐름은 좋았음. **v2 수정**: 5초에 오른쪽으로 이동하는 게 안 보이고 중앙에 그대로 있었음 → 5초부터 오른쪽으로 각도를 틀며 이동하는 것으로 수정. 6초는 몸이 절반 이상 가려져야 하는데 명시가 부족했음 → "MORE THAN HALF hidden"으로 명시.
+
+```
+Using the three reference images — the first is Chang-su's character
+reference (for exact face/eye/fur consistency), the second is the confirmed
+start frame, the third is the confirmed end frame — plus the motion
+description below, generate ONE new image: a storyboard grid of 8 panels
+arranged in 2 columns x 4 rows, laid out in reading order (left-to-right,
+top-to-bottom), representing a snapshot of the scene at each second from 0
+through 7 of an 8-second continuous shot.
+
+Panel order and timing:
+- Row 1: 0s (top-left), 1s (top-right)
+- Row 2: 2s, 3s
+- Row 3: 4s, 5s
+- Row 4: 6s, 7s
+
+Each panel shows a small, clearly readable number label in one corner
+("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
+
+Panel 0s must match the start reference image exactly. Panel 7s should be
+close to the end reference image. In every panel, the character's face, fur
+color/texture, and proportions must match the character reference image —
+do not let appearance drift across panels. The panels in between should
+show a plausible, smoothly progressing sequence of this motion:
+- 0s: Chang-su faces the camera, holding the recycling load, door closed.
+- 1s: he has turned around, back now facing the camera, leaning into the
+  door and beginning to push it with his back.
+- 2s: mid-struggle — leaning hard, legs pushing off the floor, the door
+  just starting to crack open under the pressure.
+- 3s: the door has swung open; he is stepping through the threshold.
+- 4s: he is partway through the doorway, walking forward, back still to
+  camera.
+- 5s: he has moved out onto the landing and is now clearly angling toward
+  screen-RIGHT, positioned noticeably off-center toward the right side of
+  the frame, walking away at an angle rather than straight ahead.
+- 6s: he is exiting the frame on the right side — MORE THAN HALF of his
+  body is already hidden/cropped off by the right edge of the frame, only
+  a small portion still visible; the door is just beginning to swing shut
+  on its own.
+- 7s: he is completely gone from frame; the door is fully closed, matching
+  the end reference image.
+
+Camera position/framing, background, and character design must stay
+consistent across all 8 panels — this is one continuous scene, not 8
+separate images. Thin white borders/gutters between panels are fine so they
+don't blend together.
+
+No other text, logos, or watermarks besides the second-number labels.
+```
+
 ## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v8)
 > **v7 → v8 변경 이유(사용자 지적)**: "등으로 문을 힘겹게 밀어서 여는 것"이 이 씬의 핵심 포인트인데, CRITICAL RULES 등 다른 세부 규칙들 사이에 묻혀서 강조가 부족했음 → 이 동작을 프롬프트 최상단에 **가장 중요한 순간(MOST IMPORTANT MOMENT)**으로 분리해서 구체적인 신체 동작(온 몸을 뒤로 기대어 밀기, 다리로 바닥을 밀어내기, 문이 살짝 버티다가 밀려 열림 등)으로 생생하게 묘사.
 > **v6 → v7 변경 이유(사용자 지적)**: 문이 바깥쪽으로 열려야 하는데 그렇지 않았고, 문 열렸을 때 바깥 풍경 안에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 확실히 바깥 방향으로 열리고, 문 밖은 순수한 야외 배경(하늘/바닥/난간/나무 등)만 보이도록 명시.
