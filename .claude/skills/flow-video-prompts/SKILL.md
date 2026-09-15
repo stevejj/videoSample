@@ -79,11 +79,13 @@ prompt like this (fill in the bracketed parts from the scene's planned
 motion beats):
 
 ```
-Using the two reference images (the confirmed start frame and confirmed end
-frame) plus the motion description below, generate ONE new image: a
-storyboard grid of 8 panels arranged in 2 columns x 4 rows, laid out in
-reading order (left-to-right, top-to-bottom), representing a snapshot of the
-scene at each second from 0 through 7 of an 8-second continuous shot.
+Using the three reference images — the first is [character]'s character
+reference (for exact face/eye/fur consistency), the second is the confirmed
+start frame, the third is the confirmed end frame — plus the motion
+description below, generate ONE new image: a storyboard grid of 8 panels
+arranged in 2 columns x 4 rows, laid out in reading order (left-to-right,
+top-to-bottom), representing a snapshot of the scene at each second from 0
+through 7 of an 8-second continuous shot.
 
 Panel order and timing:
 - Row 1: 0s (top-left), 1s (top-right)
@@ -95,8 +97,10 @@ Each panel shows a small, clearly readable number label in one corner
 ("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
 
 Panel 0s must match the start reference image exactly. Panel 7s should be
-close to the end reference image. The panels in between should show a
-plausible, smoothly progressing sequence of this motion:
+close to the end reference image. In every panel, the character's face, fur
+color/texture, and proportions must match the character reference image —
+do not let appearance drift across panels. The panels in between should
+show a plausible, smoothly progressing sequence of this motion:
 [short bullet list of the planned story beats, same beats you'd otherwise
 put straight into the video prompt]
 
@@ -108,10 +112,19 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-Attach the confirmed start and end frame images as the two references. If the
-grid reveals a problem (motion that doesn't fit the timing, an implausible
-jump between panels, a pose that doesn't make sense), fix it by regenerating
-the grid — this is the cheap place to catch it. Once the user is happy with
+**Attach 3 references, in this order: (1) the character reference image,
+(2) the confirmed start frame, (3) the confirmed end frame.** The middle
+panels depict novel poses that appear in neither bookend frame (mid-push,
+mid-stride), so the character reference matters here the same way it does
+for end-frame prompts — without it, appearance can drift across panels. If
+the end frame hasn't actually been generated and confirmed as a standalone
+image yet (don't assume a video result's last frame counts — check the
+scene file's status checklist), get that done first.
+
+If the grid reveals a problem (motion that doesn't fit the timing, an
+implausible jump between panels, a pose that doesn't make sense), fix it by
+regenerating the grid — this is the cheap place to catch it. Once the user
+is happy with
 the grid, move to writing the actual video-connect prompt (step 7 above),
 transcribing each panel's state into the corresponding beat of the motion
 description.
