@@ -129,6 +129,22 @@ the grid, move to writing the actual video-connect prompt (step 7 above),
 transcribing each panel's state into the corresponding beat of the motion
 description.
 
+**Two failure patterns specific to multi-panel grids** (learned from scene 1's
+grid, worth checking any time a grid has more panels than 2-3):
+
+- **A constraint stated once at the top doesn't reliably carry across many
+  panels.** Scene 1's grid nailed panels 0-4s but the character suddenly
+  faced camera again at 5s even though "seen from behind" was established
+  early — the same instruction-drift pattern seen with the Veo video prompts.
+  With 6+ panels, repeat load-bearing constraints (character orientation,
+  which props are visible) explicitly in each panel's own description rather
+  than trusting them to persist from an earlier panel.
+- **Idioms get taken literally.** "The door starts to crack open" (meaning:
+  opens a little) produced actual fracture/damage textures on the door.
+  Describe the literal physical state you want ("a narrow gap of light
+  shows at the edge") instead of a figure of speech, the same way "furrowed
+  brow" got read as an instruction to draw eyebrows on a character with none.
+
 ## Prompt-writing patterns worth reusing
 
 These are distilled from README.md — read that file for full detail and the
