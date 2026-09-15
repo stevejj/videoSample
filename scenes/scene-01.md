@@ -27,8 +27,8 @@
 - [x] 끝 프레임 v7 결과 확인 → 카메라 줌인/프레이밍 변화 자체는 성공(캐릭터 확대, 문/신발장 크롭됨). 하지만 **사용자 피드백으로 반려**: "나간다"는 서사를 줌인으로 대체하면 안 됨 — 캐릭터의 실제 이동/자세 변화로 표현해야 함. 접근 전환을 되돌리고, 카메라/줌은 완전히 고정한 채 **다리·발 위치를 문자 그대로 지정하는 구체적 포즈 묘사**로 v8 재작성
 - [x] v8 시도 전, 사용자가 구도 자체의 물리적 모순을 지적(문이 배경에 있으니 "정면 유지+전진"은 뒷걸음질을 요구하는 셈) → **뒷모습(back view)으로 전환**하여 v9 작성. v8은 시도하지 않고 폐기.
 - [x] 끝 프레임 v9 결과 확인 → 성공. 뒷모습 전환, 문 열림, 문턱 근처 위치, 배경/소품 일관성 모두 확인됨. **시작/끝 프레임 최종 확정.**
-- [ ] 영상 연결 프롬프트(Veo 3.1 Lite) 작성 — 컨셉 제안 후 사용자 승인 받고 작성 예정
-- [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
+- [x] 영상 연결 프롬프트(Veo 3.1 Lite) 컨셉 제안 → 사용자 승인(BGM 잔잔 + 효과음만, 대사/텍스트 없음) → 프롬프트 작성 완료
+- [ ] 사용자가 Flow(Veo 3.1 Lite)에서 8초 영상 생성 후 최종 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -195,4 +195,30 @@ logos, no watermark.
 ```
 
 ## ③ 영상 연결 프롬프트 (Veo 3.1 Lite)
-- 이미지 생성 결과 확인 후 결정 예정
+> **컨셉**: 문 닫힘 상태로 정면 서있음 → 몸으로 문 밀어 열기 → 뒤돌아서 문 쪽으로 걸어감(휘청이며 균형 잡음) → 문턱 근처에서 안정적으로 멈춤(끝 프레임과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
+
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home.
+
+Chang-su, a small fluffy 3D-pixar-style penguin character, stands facing
+the camera holding a heavy load of recycling: a tied cardboard bundle with
+a mesh bag of cans hooked to it in one wing-flipper, and a clear bag of
+PET bottles in the other. The front door in front of him is closed.
+
+He nudges the door open with his body/shoulder since both wings are full,
+struggling slightly. As the door swings open, he turns fully around, away
+from the camera, and begins walking toward the now-open doorway, his back
+now to the camera. He walks with a subtle side-to-side wobble, visibly
+working to keep his balance under the load, but never drops or spills
+anything. He reaches the doorway threshold and comes to a steady stop,
+standing just at the open door with the outside visible beyond it.
+
+Motion should be natural and continuous, not exaggerated or cartoonish —
+a believable, slightly effortful walk, not a comedic pratfall.
+
+Audio: gentle, soft background music throughout (calm, warm, understated
+mood). Light, realistic sound effects only — a door creak/click as it
+opens, soft footsteps, a faint rustle of the plastic bag and clinking
+cans. NO dialogue, NO voiceover, NO on-screen text or captions.
+```
