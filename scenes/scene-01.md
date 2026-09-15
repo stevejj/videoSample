@@ -40,7 +40,8 @@
 - [x] 사용자 요청으로 컨셉 대전환: 끝 프레임을 **캐릭터 없는 빈 현관(문 닫힘)**으로 변경 → 좌우/거리 문제 자체가 무의미해짐. v16 작성.
 - [ ] 끝 프레임을 v16 프롬프트로 재생성 후 결과 확인
 - [x] 영상 연결 프롬프트를 v16 결말(문 닫힘)에 맞춰 v4로 재작성 — 등으로 문 밀기 + 도어클로저로 자동으로 문 닫힘 컨셉 반영
-- [x] v5 영상 결과를 2fps로 프레임 분석 → 심각한 렌더링 붕괴 다수 발견(아래 참고) → **동작 단계가 너무 많아서(5단계 이상) Lite 모델 한계를 넘은 것으로 판단**. 사용자에게 범위 축소(문 닫힘 장면 제외 등) 제안, 방향 논의 대기 중
+- [x] v5 영상 결과를 2fps로 프레임 분석 → 심각한 렌더링 붕괴 다수 발견. 처음엔 "단계가 너무 많다"고 판단했으나, 사용자 지적으로 재검토하여 **구체적 원인 3가지**를 찾음: (1) "turns toward screen-RIGHT"의 "turns"가 몸 재회전으로 오독됨, (2) 문이 열린 상태의 참조 이미지가 없어서 디자인이 매번 다르게 그려짐, (3) 문 닫힘 타이밍이 캐릭터 퇴장과 연동 안 됨. 세 가지 다 교정하여 v6 재작성.
+- [ ] 영상을 v6 프롬프트로 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -214,7 +215,7 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v5)
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v6)
 > **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 나가서 **오른쪽 방향으로 이동**하며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
 > **v4 → v5 변경 이유**: 사용자 요청으로 퇴장 방향을 **오른쪽**으로 명시.
 >
@@ -227,7 +228,10 @@ logos, no watermark.
 > - 6.0초: 문이 이미 완전히 닫혔는데 캐릭터는 여전히 화면 안(집 안)에 서있음 — "나간 뒤 문이 닫힌다"는 논리 자체가 깨짐
 > - 7.0~7.5초: 최종적으로는 목표(빈 방, 문 닫힘)에 도달
 >
-> **원인 추정**: 이번 요청은 "몸으로 문 밀기 + 돌기 + 걷기 + 오른쪽으로 방향 전환 + 화면 밖 퇴장 + 문 자동 닫힘"까지 **5단계 이상의 복합 동작**을 요구함. v1(3단계: 문열기+돌기+걷기)에서도 이미 문제가 났었는데, 그보다 훨씬 많은 단계라 Veo 3.1 Lite의 처리 한계를 명백히 넘은 것으로 판단. **다음 시도는 단계 수를 대폭 줄여야 함** (예: "문 닫힘"은 빼고 "나가는 데까지"만 이 씬에서 완결).
+> **원인 재분석(사용자 지적으로 재검토)**: 단계 수 문제가 아니라 프롬프트 문구 자체의 구체적 결함 3가지로 재진단함.
+> 1. **"turns and heads toward screen-RIGHT"의 "turns"가 "몸을 돌려라(카메라 쪽으로 재회전)"로 오독된 것으로 추정** — 실제로 캐릭터가 다시 정면을 보인 구간(4.5~5.5초)과 일치. "몸 방향(뒷모습)은 그대로 두고 걷는 경로만 오른쪽으로 휜다"는 걸 "turn"이라는 단어 없이 명확히 구분해서 표현해야 함.
+> 2. **"문이 열린 상태"를 보여주는 참조 이미지가 전혀 없음** — 시작/끝 프레임이 둘 다 문 닫힘이라, 중간에 문이 열린 모습은 순수하게 텍스트로만 상상해서 그려야 했음 → 매번 다른 문 디자인(나무문/유리문)으로 그려진 원인. 문이 열려있을 때도 "참조 이미지와 같은 문"이라고 명시적으로 앵커링 필요.
+> 3. **"문이 닫히는 타이밍"이 "캐릭터 퇴장"과 연동되어 있지 않음** — "끝나갈 때 저절로 닫힌다"고만 해서, 모델이 캐릭터 이동은 못 맞추면서 문 닫힘 타이밍만 시간 기준으로 지켜버림(캐릭터가 아직 안에 있는데 문이 닫힘). "캐릭터가 완전히 퇴장한 다음에만" 닫히라고 조건부로 명시 필요.
 
 ```
 An 8-second continuous shot, camera completely static — no panning, no
@@ -241,35 +245,46 @@ PET bottles in the other. Both wings are completely full, so he cannot
 use them to open the door.
 
 In one single continuous motion, with no pauses, no reversals, and no
-repeated actions: he turns around and backs into the door, pushing it
-open with his back/body since his wings are full, struggling under the
-weight. Once the door is open, he continues walking forward through the
-doorway, then turns and heads toward screen-RIGHT, walking away along the
-outdoor landing/walkway toward the right side of the frame, gradually
-moving farther and farther to the right and out of frame. The door has a
-self-closing hinge mechanism (the visible door closer arm at the top of
-the frame) — once he is no longer holding it open and has walked far
-enough away, the door swings shut on its own, arriving fully closed by
-the end of the clip. By the final moment, Chang-su is no longer visible
-anywhere in the frame — he has fully exited toward the right, and the
-door has closed behind him, leaving the entryway empty.
+repeated actions: he turns around once (his back now fully and
+permanently facing the camera) and backs into the door, pushing it open
+with his back/body since his wings are full, struggling under the weight.
+Once the door is open, he continues walking forward through the doorway
+and out. Without rotating his body or facing the camera again at any
+point, he simply angles his walking path so that he moves toward
+screen-RIGHT while still walking with his back to the camera the entire
+time — think of it as steering while walking, not turning around. He
+keeps moving away from camera and toward screen-right until he is
+completely gone from the frame.
+
+The door itself — the same solid brown wooden door with the same silver
+lever handle and door-closer arm hardware seen in the reference images —
+stays visually consistent throughout, whether closed, opening, or open.
+It does not change color, material, or hardware design at any point.
+
+Only after Chang-su has fully and completely left the frame (he must be
+100% out of view first) does the door's self-closing hinge mechanism
+begin to swing it shut on its own, arriving fully closed by the very end
+of the clip. The door closing must not begin while any part of Chang-su
+is still visible.
 
 CRITICAL RULES (do not violate these):
-- The door opens once, pushed by his back, and stays open only while he
-  is passing through it. Once he has moved far enough away, it must swing
-  shut ON ITS OWN via the self-closing mechanism, naturally near the end
-  of the clip — not an abrupt cut.
-- After passing through the doorway, he exits toward screen-RIGHT, not
-  straight ahead and not toward the left — his walking path curves to the
-  right and he leaves the frame on the right side.
+- Chang-su turns his body only ONCE, near the beginning, to face away
+  from camera. After that single turn, he must NEVER face the camera
+  again and must NEVER rotate his body for the rest of the clip — only
+  his walking path curves toward screen-RIGHT, his back stays to the
+  camera throughout.
+- The door's appearance (color, material, handle, closer hardware) stays
+  perfectly consistent throughout the entire clip — it is always the same
+  door as in the reference images, never a different design.
+- The door does not start closing until Chang-su has completely exited
+  the frame. Character-exit happens first, door-closing happens second —
+  these must not overlap.
 - Chang-su moves continuously away from camera for the entire clip once
   he starts walking. He must never stand still, walk in place, or move
-  backward toward camera, and he must fully exit the frame by the end.
+  backward toward camera.
 - The two items he carries stay solid and continuously visible while he
   is on screen. They must not flicker, disappear, or change shape.
 - Do not repeat, loop, hesitate, or reverse any part of the motion.
-- The final 1-2 seconds must show the empty entryway with the door fully
-  closed and no character present — a calm, settled "aftermath" shot.
 
 His body leans/wobbles slightly side to side as he walks, working to keep
 his balance under the load — a natural, subtle wobble, not exaggerated.
@@ -284,6 +299,9 @@ fading as he walks away, and a soft door-closer click/thud as the door
 swings shut on its own near the end. NO dialogue, NO voiceover, NO
 on-screen text or captions.
 ```
+
+### v5 (참고용, 렌더링 붕괴로 재작성) — 문 디자인 변경/캐릭터 재정면화/문-퇴장 논리 붕괴
+- 결과는 위 v6 항목 상단의 "v5 영상 결과 분석" 참고. 원인 3가지(turn 단어 오독, 열린 문 레퍼런스 부재, 퇴장-닫힘 타이밍 미연동)를 찾아 v6로 수정.
 
 ### v4 (참고용, 퇴장 방향 미지정 — 실제 테스트 전에 방향 추가 요청으로 v5 작성)
 
