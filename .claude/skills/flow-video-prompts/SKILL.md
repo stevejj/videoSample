@@ -130,7 +130,9 @@ other way around.
 
 Once start/end frames are confirmed and the user opts in, write a Nano Banana
 prompt like this (fill in the bracketed parts from the scene's planned
-motion beats):
+motion beats). This template already bakes in every fix scene 1 needed
+across 3 grid iterations (v5→v7) — start from this shape, don't start from
+a bare bullet list and rediscover the same failure modes:
 
 ```
 Using the three reference images — the first is [character]'s character
@@ -150,18 +152,34 @@ Panel order and timing:
 Each panel shows a small, clearly readable number label in one corner
 ("0s", "1s", ... "7s") so the sequence is easy to read at a glance.
 
+CAMERA LOCK (applies to every single panel, no exceptions): the camera
+framing, distance, angle, and zoom level are IDENTICAL in all 8 panels —
+exactly matching panel 0s. [Name 2-3 fixed background elements that appear
+in the shot, e.g. a shoe rack, a doormat, a door frame] must appear at the
+exact same size, scale, and position in every panel without exception. Do
+not let the shot zoom in, zoom out, crop tighter, or shift at any point
+across the 8 panels — only [character]'s pose and position change, never
+the camera.
+
 Panel 0s must match the start reference image exactly. Panel 7s should be
 close to the end reference image. In every panel, the character's face, fur
 color/texture, and proportions must match the character reference image —
 do not let appearance drift across panels. The panels in between should
 show a plausible, smoothly progressing sequence of this motion:
-[short bullet list of the planned story beats, same beats you'd otherwise
-put straight into the video prompt]
+[per-panel bullet list of the planned story beats, same beats you'd
+otherwise put straight into the video prompt — for each beat, follow the
+positive+negative pairing pattern below rather than a bare description]
+
+The N → N+1 → ... stretch covering [the exit/transition beats] is one
+single, continuous progression, not disconnected snapshots — position,
+stride, and any framing crop should progress smoothly and believably
+between consecutive panels, like flipping through frames of one real
+sequence rather than picking unrelated moments.
 
 Camera position/framing, background, and character design must stay
 consistent across all 8 panels — this is one continuous scene, not 8
-separate images. Thin white borders/gutters between panels are fine so they
-don't blend together.
+separate images (see CAMERA LOCK above). Thin white borders/gutters
+between panels are fine so they don't blend together.
 
 No other text, logos, or watermarks besides the second-number labels.
 ```
@@ -178,52 +196,41 @@ scene file's status checklist), get that done first.
 If the grid reveals a problem (motion that doesn't fit the timing, an
 implausible jump between panels, a pose that doesn't make sense), fix it by
 regenerating the grid — this is the cheap place to catch it. Once the user
-is happy with
-the grid, move to writing the actual video-connect prompt (step 7 above),
-transcribing each panel's state into the corresponding beat of the motion
-description.
+is happy with the grid, move to writing the actual video-connect prompt
+(step 8 above), transcribing each panel's state into the corresponding beat
+of the motion description.
 
-**Failure patterns specific to multi-panel grids** (found and confirmed fixed
-on scene 1's grid — check for these any time a grid has more than 2-3 panels):
+**Writing each panel's motion beat — do this by default, not just when a
+first attempt fails** (scene 1 needed 3 grid rounds to converge on this;
+starting here skips straight to what worked):
 
-- **A constraint stated once at the top doesn't reliably carry across many
-  panels.** Scene 1's grid nailed panels 0-4s but the character suddenly
-  faced camera again at 5s even though "seen from behind" was established
-  early — the same instruction-drift pattern seen with the Veo video prompts.
-  Fix: repeat load-bearing constraints (character orientation, which props
-  are visible) explicitly in each panel's own description, not just once at
-  the start. **Then also restate the constraint once more as a summary rule**
-  after the per-panel list (e.g. "once he turns at 1s, his back stays to the
-  camera for every remaining panel until he is fully gone") — this
-  redundancy (per-panel + summary) is what actually fixed the drift, not
-  either alone.
-- **Idioms get taken literally.** "The door starts to crack open" (meaning:
-  opens a little) produced actual fracture/damage textures on the door.
-  Describe the literal physical state you want ("a narrow gap of light
-  shows at the edge") instead of a figure of speech, the same way "furrowed
-  brow" got read as an instruction to draw eyebrows on a character with none.
-- **Pair the positive description with an explicit negative constraint** for
-  anything prone to drifting or being misread — e.g. "the door is simply
-  opening on its hinge; it must NOT show any cracks, fractures, or damage,"
-  or "the door is STILL OPEN at this point — it has not started closing
-  yet." Just describing the desired state isn't as reliable as also naming
-  the specific wrong outcome and forbidding it.
-- **A negative constraint alone can still lose to the model's own
-  association for a situation, even when it's specific and unambiguous.**
-  Scene 1 hit this twice on the same grid: "he must NOT be shown in
-  profile or back-view" at the push beat still produced an early turn, and
-  a separate "must NOT show cracks, fractures, or damage" (with the word
-  "crack" removed entirely this time) still produced damage texture on the
-  door during the hard-push beat. In both cases the model seems to
-  associate "pushing hard against something" with "already turned away" or
-  "causing damage," independent of what the text forbids. Fix: add a
-  concrete positive description of the specific feature that must remain
-  visible/intact — "both eyes and his beak must be clearly visible, same
-  as the opening panel" rather than just "don't show his back"; "the
-  surface is identical smooth brown paint, matching the closed-door panel
-  exactly" rather than just "no cracks." A camera-framing anchor works the
-  same way: "the shoe rack and door frame must be the same size and
-  position in every panel" holds better than "the camera stays fixed."
+- **Pair every positive description with an explicit negative constraint,
+  AND back the negative with a concrete positive detail of what must stay
+  visible/intact.** A negative constraint alone ("must NOT be shown in
+  profile," "must NOT show cracks or damage") is not reliable by itself —
+  scene 1 saw the model default to "already turned away" and "damaged
+  surface" for a hard-push beat even when both were explicitly forbidden
+  in text, twice, on two different grid attempts. What worked: naming the
+  exact feature that must remain visible ("both eyes and his beak must be
+  clearly visible, same as the opening panel") and the exact surface state
+  that must be unchanged ("identical smooth brown paint, matching the
+  closed-door panel exactly") — a positive anchor, not just a prohibition.
+- **Repeat load-bearing constraints (orientation, visible props) in every
+  panel's own description, not just once at the top**, and **restate the
+  constraint once more as a summary rule** after the per-panel list (e.g.
+  "once he turns at Xs, his back stays to the camera for every remaining
+  panel until he is fully gone"). A constraint stated once doesn't reliably
+  carry across 8 panels — the redundancy (per-panel + summary) is what
+  fixed the drift, not either alone.
+- **Never use idioms for a physical state** — "the door starts to crack
+  open" (meaning: opens a little) produced actual fracture/damage textures.
+  Describe the literal physical state instead ("a narrow gap of light
+  shows at the edge"), the same way "furrowed brow" got read as an
+  instruction to draw eyebrows on a character with none.
+- **The CAMERA LOCK block in the template above is not optional decoration
+  — include it by default.** Without a framing anchor tied to fixed
+  background elements, panel-to-panel zoom/distance can drift even when
+  nothing else is wrong with the prompt.
 
 ## Prompt-writing patterns worth reusing
 
@@ -272,6 +279,56 @@ reasoning behind each one, but the short version:
   constraint repeated at every beat before that point — "at 1s, at 2s: he
   must be fully front-facing, never profile or 3/4 angle" — not just a
   single statement of when the turn is allowed to happen.
+
+## Video-connect prompt building blocks (default, not just for failures)
+
+These converged after several rounds on scene 1 (v9→v13) — start a new
+scene's video prompt with these already in place rather than adding them
+after a failed attempt shows why they're needed:
+
+- **If a confirmed storyboard grid exists and the user is generating in
+  Flow's "Ingredients to Video" ("소재") mode, wrap the prompt to name each
+  reference image's role explicitly** — mode doesn't auto-interpolate
+  between a start/end image pair the way "Frames to Video" does, so the
+  prompt has to state it:
+  ```
+  Using the three uploaded reference images as the basis for this video:
+  - The FIRST image is the exact opening moment of this video. The video
+    must begin matching it essentially exactly.
+  - The SECOND image is the exact final moment of this video. The video
+    must end matching it essentially exactly.
+  - The THIRD image is an 8-panel storyboard grid (labeled 0s-7s) that
+    shows exactly what happens in every second in between. Treat this
+    grid as the authoritative second-by-second script — reproduce its
+    poses/framing/positions at their labeled seconds, staged as smooth
+    continuous motion rather than jumping between panels.
+  ```
+  Ask which mode the user is using before writing the prompt — Frames to
+  Video (just describe the motion between the two images) and Ingredients
+  mode (the wrapper above, plus the grid as a third reference) need
+  differently-shaped prompts, and defaulting to the wrong shape wastes a
+  paid Veo generation.
+- **Anchor multi-second movement to landmarks visible in frame, not
+  relative progress language.** "He must show visible progress every
+  second" was stated explicitly and still produced a 1.5s+ stall at a
+  doorway threshold. What worked: tying each second to something actually
+  in the shot ("by 3.5s he must be past the threshold line, standing on
+  the landing," "by 4s, at the same depth as the railing"). Pick 2-3 fixed
+  landmarks in the scene's background and check off a checkpoint against
+  them for every second of a multi-second move.
+- **Before a scripted one-time orientation change (a single turn, a
+  reveal), lock every earlier beat with its own positive+negative
+  orientation pair** — not just a statement of when the change is allowed
+  to happen. "He turns once, at 3s" did not stop the turn from leaking to
+  1s in practice; "at 1s, at 2s: he must be fully front-facing, both eyes
+  and beak visible, never profile or back-view" at each of those beats is
+  what actually held it.
+- **Give the single emotional/comedic core action its own loud paragraph**
+  (e.g. "MOST IMPORTANT MOMENT") separate from the CRITICAL RULES list, and
+  cap it with an explicit numeric deadline ("must be finished by Xs") — a
+  qualitative emphasis like "give this weight, don't rush it" will win
+  against a numeric cap stated elsewhere in the prompt and eat the rest of
+  the clip's runway.
 
 ## Verifying a generated video
 
