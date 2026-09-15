@@ -47,7 +47,8 @@
 - [x] 확정된 스토리보드 그리드의 초 단위 내용을 그대로 옮겨서 영상 프롬프트 v9 작성
 - [x] v9 영상 결과를 2fps로 프레임 분석 → 최종 상태(문 닫힘/빈 방)는 정확했지만, 문 미는 동작에 시간을 너무 많이 써서(0~4초) 캐릭터가 거의 안 움직이다가 5.5~6초에 급하게 이동을 몰아 처리하며 옆모습 노출 글리치 발생 → 문 미는 구간에 절대 시간 상한 명시, 2~6초 구간에 "매초 이동 필수" 규칙 추가한 v10 재작성
 - [x] v10 시도 전, 사용자가 물리적 모순 지적: "뒤돌아서 등으로 민다"는 뒤돈 순간 정면이 문을 향하게 되어 등으로 미는 게 불가능한 지시였음 → 뒤돌기를 미는 동작 뒤(3초)로 옮기고, 미는 동안엔 정면을 유지한 채 뒷걸음질로 등을 대는 구조로 v11 재작성
-- [ ] 영상을 v11 프롬프트로 재생성 후 결과 확인
+- [x] v11 영상 결과를 2fps로 프레임 분석 → 몸 방향 논리 자체는 문제없었으나 **실행 타이밍이 드리프트**: (1) "1s-2s 정면 유지"가 지켜지지 않고 1s부터 이미 옆모습으로 돌아가버려 등으로 미는 장면 자체가 제대로 안 잡힘, (2) 3s에 회전은 했지만 3~4.5초 구간이 "매초 이동" 규칙에도 불구하고 거의 정지 상태로 렌더링되어 문턱을 못 넘고 안쪽에 머무름(사용자 피드백과 일치) → 추상적 "매초 이동" 규칙 대신 도어매트/문턱/난간 같은 **구체적 랜드마크에 위치를 고정**하고, 회전 전 구간에 "프로필 금지" 부정 제약을 추가한 v12 재작성
+- [ ] 영상을 v12 프롬프트로 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -298,7 +299,14 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v11)
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v12)
+> **v11 영상 결과 분석(2fps)**: 몸 방향 논리(정면 유지하며 등으로 밀기 → 문 열린 후 1회 회전)는 물리적으로 문제없었고 실제로 그 순서를 어긴 렌더링 붕괴도 없었음. 하지만 **지시가 지켜지지 않고 타이밍이 드리프트하는 별개의 문제**가 발견됨:
+> 1. **1s 시점에 이미 옆모습(프로필)으로 돌아가 있음** — "1s-2s 동안 정면 유지"라고 명시했는데도 회전이 훨씬 일찍(사실상 즉시) 시작되어, 정작 "등으로 문을 밀어서 여는" 씬의 핵심 장면이 정면이 아니라 옆모습으로 뭉개져서 나옴. 이게 사용자가 지적한 **문제 1("문을 등으로 바깥으로 밀어야 한다")**의 원인.
+> 2. **3s에 회전은 정상적으로 일어났지만, 그 이후 3~4.5초 구간에서 캐릭터가 문턱 근처에 거의 정지된 채로 멈춰있음** — "매초 눈에 띄게 이동해야 한다"는 규칙이 있었는데도 지켜지지 않음. 그러다 5~6.5초에 뒤늦게 오른쪽으로 몰아서 이동. 실제로는 문을 통과해서 바깥 랜딩으로 나간 게 아니라 문턱 안쪽/문 앞에서 정지했다가 뒤늦게 옆으로 빠져나가는 것처럼 보임. 이게 사용자가 지적한 **문제 2("문을 열기만 하고 안쪽에서 오른쪽으로 걸어가고 있음")**의 원인.
+> 3. v9에서 "무게감 있게(정성적)"가 "1s-2s(정량적)"를 압도했던 것과 같은 계열의 문제지만, 이번엔 그 반대 방향 구간(미는 구간이 아니라 통과하는 구간)에서 "매초 이동해야 한다"는 **추상적 규칙 자체가 충분히 구체적이지 않아서** 지켜지지 않은 것으로 판단.
+>
+> **v12 수정**: (1) 1s-2s 구간에 "옆모습/3쿼터 금지"라는 명시적 부정 제약을 추가해 회전이 새어나가는 것을 막음. (2) 3s 이후 구간의 "매초 이동" 규칙을 추상적 서술 대신 **도어매트 가장자리 / 문턱 라인 / 난간** 같은 화면에 실제로 보이는 구체적 랜드마크에 각 초의 위치를 고정하는 방식으로 교체 — "더 멀리 가야 한다"가 아니라 "이 초에는 반드시 이 랜드마크를 지나 있어야 한다"로 명시.
+>
 > **v10 시도 전, 사용자가 물리적 모순 지적**: 카메라를 보고 서있는 상태에서 문은 이미 캐릭터 뒤쪽에 있음(카메라→캐릭터→문 순서 배치). 그런데 v9/v10 프롬프트는 "뒤돌아서(등을 카메라 쪽으로) 등으로 문을 민다"고 했는데, 뒤돌면 정면이 문 쪽을 향하게 되므로 그 상태에서 "등으로" 미는 건 물리적으로 불가능함. 모델이 이 모순을 풀려다 문이 안쪽/바깥쪽으로 왔다갔다 하고 몸이 문에 섞여 들어가는 렌더링 붕괴를 일으킨 것으로 추정.
 > **v11 수정**: **순서를 바꿈** — 뒤돌지 않은 상태(카메라를 보는 채로) 그대로 뒷걸음질로 문에 등을 대고 밀어서 연다(이 구간은 얼굴이 보임, 자연스러움). 문이 열린 다음에야 한 번 뒤돌아서 문 쪽으로 걸어나간다. "뒤돌기"를 미는 동작 이전이 아니라 **이후(3초 시점)**로 이동.
 > **v9 영상 결과 분석(2fps)**: 최종 상태(문 닫힘, 빈 방)는 정확히 맞았고 문 디자인/외부 구조물 문제도 없었음(진전!). 다만 (1) 0~4초 동안 문 미는 동작에 시간이 너무 많이 쓰이고 캐릭터가 도어매트에서 거의 안 움직임, (2) 5.5~6초에 급하게 이동을 몰아 처리하려다 몸이 옆모습으로 홱 틀어지며 얼굴 일부가 노출되는 글리치 발생. **원인**: "MOST IMPORTANT MOMENT... 서두르지 말고 무게감 있게"라는 강조가 "1s-2s"라는 명시적 시간 제한보다 더 강하게 작용해서 문 미는 구간이 전체 러닝타임 절반을 잡아먹음 → 남은 "자연스럽게 걸어나가기" 구간이 급격히 압축되며 글리치 발생.
@@ -323,6 +331,160 @@ No other text, logos, or watermarks besides the second-number labels.
 > 2. **"문이 열린 상태"를 보여주는 참조 이미지가 전혀 없음** — 시작/끝 프레임이 둘 다 문 닫힘이라, 중간에 문이 열린 모습은 순수하게 텍스트로만 상상해서 그려야 했음 → 매번 다른 문 디자인(나무문/유리문)으로 그려진 원인. 문이 열려있을 때도 "참조 이미지와 같은 문"이라고 명시적으로 앵커링 필요.
 > 3. **"문이 닫히는 타이밍"이 "캐릭터 퇴장"과 연동되어 있지 않음** — "끝나갈 때 저절로 닫힌다"고만 해서, 모델이 캐릭터 이동은 못 맞추면서 문 닫힘 타이밍만 시간 기준으로 지켜버림(캐릭터가 아직 안에 있는데 문이 닫힘). "캐릭터가 완전히 퇴장한 다음에만" 닫히라고 조건부로 명시 필요.
 
+```
+An 8-second continuous shot, camera completely static — no panning, no
+zooming, no cuts — fixed in the entryway of an ordinary home, facing the
+front door. Visible landmarks in this fixed shot: the doormat directly in
+front of the door, the door's own threshold line, and (once the door is
+open) a railing out on the landing beyond it. Use these landmarks as fixed
+position checkpoints — they do not move, only Chang-su moves relative to
+them.
+
+- 0s: Chang-su faces the camera, holding a heavy load of recycling (a tied
+  cardboard bundle with a mesh bag of cans hooked to it in one
+  wing-flipper, a clear bag of PET bottles in the other). Door closed,
+  directly behind him. His torso and face are pointed straight at the
+  camera.
+- 1s (MOST IMPORTANT MOMENT — brief but forceful, NOT slow): his torso and
+  face are STILL pointed straight at the camera, exactly as at 0s — no
+  rotation, no turning, not even a partial turn. He takes a step backward
+  so his back presses against the door, then leans his whole body weight
+  back and pushes hard against the door with his back, straining, legs
+  pushing against the floor for leverage. He must NOT be shown in
+  profile, 3/4 view, or any angle other than fully front-facing at this
+  moment — if his body appears to be turning or angled to the side at 1s,
+  that is a failure state.
+- 2s: he is STILL fully front-facing the camera, same as 1s — still no
+  rotation. The push finishes and the door swings open outward, away from
+  him and away from the camera — by the END of this second the door must
+  already be fully open. The door itself is completely undamaged and
+  unmarked, simply opening on its hinge like normal — it must NOT show any
+  cracks, fractures, or damage of any kind. THE DOOR-PUSH BEAT IS NOW
+  OVER — it must not continue into 3s.
+- 3s: NOW, for the first (and only) time, he turns his body around so his
+  back fully faces the camera, and immediately steps forward through the
+  open doorway. By the END of this second, his leading foot must already
+  be past the door's threshold line — physically standing on the outdoor
+  landing surface, not merely turned around while still standing on the
+  doormat. Face NOT visible from this point on. Still carrying the exact
+  same two items, clearly visible in his wings.
+- 3.5s: both feet are now on the outdoor landing surface, clearly past the
+  threshold line, with the doorway frame visibly behind him. He is not
+  lingering at the threshold — standing at or just inside the threshold
+  at this point is a failure state, even if his body has already turned.
+- 4s: he has taken several more steps onto the landing and is now roughly
+  at the same depth as the railing, clearly and unmistakably farther from
+  the door than at 3.5s. Still seen from BEHIND, face NOT visible, still
+  carrying the same two items.
+- 4.5s-5s: continuing to walk on the landing, now visibly curving his path
+  toward screen-RIGHT, moving past the midpoint of the railing toward its
+  right end. Clearly farther right than at 4s. Still seen from BEHIND,
+  back fully to camera — do NOT let him turn or show his face here.
+- 5.5s-6s: he is near the right end of the railing, almost completely
+  exited — MORE THAN HALF of his body is already cropped off by the right
+  edge of the frame, only a small portion still visible. The door is
+  STILL OPEN at this point — it has not started closing yet. Still seen
+  from BEHIND, face NOT visible — he must not spin or jerk toward camera
+  to cover distance quickly.
+- 6.5s-7s: he is completely gone from frame — no part of him visible
+  anywhere. Only now does the door's self-closing hinge mechanism swing it
+  fully shut on its own, arriving closed by the very end of the clip.
+
+The 3s → 3.5s → 4s → 4.5s → 5s → 5.5s → 6s stretch is one single,
+continuous, natural exit, not disconnected moments — his position relative
+to the threshold line and the railing should progress smoothly and
+believably, like consecutive frames of one real walk out the door and
+across the landing. Each checkpoint above (past the threshold by 3.5s, at
+the railing's depth by 4s, past the railing's midpoint by 4.5s-5s, more
+than half-cropped by 5.5s-6s) is a hard requirement, not a suggestion —
+reaching a checkpoint late, or standing near the threshold/doormat for
+more than one of these listed moments, is a failure state exactly as much
+as a physically impossible pose would be.
+
+The door itself — the same solid brown wooden door with the same silver
+lever handle and door-closer arm hardware seen in the reference images —
+stays visually consistent throughout, whether closed, opening, or open. It
+does not change color, material, or hardware design at any point. Because
+he backs into it and pushes with his back while still facing camera, the
+door swings outward, away from him and away from the camera, out into the
+exterior space — it must NEVER swing inward toward the camera/character,
+and must never appear to open toward him or trap/press against him.
+
+Beyond the doorway, only ordinary outdoor scenery is visible: sky, the
+outdoor landing/walkway floor, a railing, trees or greenery, maybe a
+neighboring building in the distance. There must be NO other door, gate,
+screen door, or any door-like structure of any kind visible in the
+exterior — just a normal outdoor space.
+
+CRITICAL RULES (do not violate these):
+- Chang-su does NOT turn around to push the door. He pushes it open with
+  his back while still facing generally toward the camera (backing into
+  it) — turning around first and then pushing with his back is physically
+  impossible (his front, not his back, would face the door) and must not
+  happen.
+- Before 3s, Chang-su is ALWAYS fully front-facing the camera — never in
+  profile, never at a 3/4 angle, never mid-turn. There are only two valid
+  orientations in this entire clip: fully front-facing (0s-2s) and fully
+  back-facing (3s onward, after the single turn). Any angle in between,
+  at any point, is a failure state — this applies most strictly at 1s-2s,
+  where the temptation is to start rotating early to look more natural;
+  resist that, the rotation must be held until exactly 3s.
+- The door-push struggle happens ONLY within 1s-2s and must be finished —
+  door fully open — by the end of 2s. It must NOT extend into 3s or
+  beyond. Make it visually strong and clear within that short window
+  rather than stretching it out slowly.
+- Chang-su turns his body only ONCE, at 3s (after the door is already
+  open), to face away from camera. After that single turn, he must NEVER
+  face the camera again and must NEVER rotate his body for the rest of
+  the clip, all the way through 7s — only his walking path curves toward
+  screen-RIGHT, his back stays to the camera throughout every remaining
+  second. This applies just as strictly at 5s-6s as it does right after
+  the turn — do not let him spin toward camera to cover ground quickly.
+- Chang-su must be standing on the outdoor landing surface, past the
+  door's threshold line, no later than 3.5s. Being turned around but still
+  standing on the doormat or at the threshold past 3.5s is a failure
+  state — the turn and the actual step through the doorway happen
+  together, not turn-then-pause-then-step.
+- From 3s through 6s, Chang-su must hit each landmark-based checkpoint
+  above (threshold by 3.5s, railing depth by 4s, past railing midpoint by
+  4.5s-5s, more than half-cropped by 5.5s-6s) on schedule. He must never
+  remain within one landmark's distance of his previous position for more
+  than the one checkpoint it belongs to, and he must never skip a
+  checkpoint by jumping straight to a later one.
+- The door's appearance (color, material, handle, closer hardware) stays
+  perfectly consistent throughout — always the same door as in the
+  reference images, never a different design, and never showing cracks or
+  damage.
+- The door swings outward (away from camera, into the exterior), never
+  inward toward the camera.
+- The exterior beyond the doorway is plain outdoor scenery only — no
+  additional doors or door-like structures anywhere in the background.
+- The door does not start closing until Chang-su has completely exited the
+  frame (see 6s vs 7s above) — character-exit happens first, door-closing
+  happens second, these must not overlap.
+- Chang-su moves continuously away from camera for the entire clip once he
+  starts walking (3s onward). He must never stand still, walk in place, or
+  move backward toward camera.
+- The two items he carries stay solid and continuously visible while he is
+  on screen. They must not flicker, disappear, or change shape.
+- Do not repeat, loop, hesitate, or reverse any part of the motion.
+
+His body leans/wobbles slightly side to side as he walks, working to keep
+his balance under the load — a natural, subtle wobble, not exaggerated.
+He never drops or spills anything.
+
+Motion should be natural and continuous, not exaggerated or cartoonish.
+
+Audio: gentle, soft background music throughout (calm, warm, understated
+mood). Light, realistic sound effects only — a soft effort/grunt sound as
+he pushes the door with his back, a door creak as it opens, footsteps
+fading as he walks away, and a soft door-closer click/thud as the door
+swings shut on its own near the end. NO dialogue, NO voiceover, NO
+on-screen text or captions.
+```
+
+### v11 (참고용, 2fps 분석 결과 실패) — 방향 논리는 맞았으나 타이밍 드리프트(프로필 조기 회전 + 문턱에서 정지)
+> 실패 원인 상세는 위 v12 항목의 "v11 영상 결과 분석" 참고.
 ```
 An 8-second continuous shot, camera completely static — no panning, no
 zooming, no cuts — fixed in the entryway of an ordinary home, facing the

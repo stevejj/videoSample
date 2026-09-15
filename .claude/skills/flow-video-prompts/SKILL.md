@@ -210,6 +210,26 @@ reasoning behind each one, but the short version:
   (state reverting, character standing still, props flickering, motion
   repeating), and make ordering constraints between two events explicit
   conditions rather than relying on timing language.
+- **Abstract progress rules ("must show visible progress every second") can
+  still fail even after adding explicit time caps.** Scene 1 hit this
+  twice, in two different beats: first a push action ate half the runway
+  despite a numeric cap (fixed by pairing the cap with qualitative-language
+  removal, see above), then later — after that fix — the *walking* beat
+  stalled near the doorway for 1.5s+ despite an explicit "must move every
+  second" rule, because "progress" had no concrete reference point. Fix:
+  anchor each second (or half-second) to a landmark actually visible in
+  frame (a doormat edge, a threshold line, a railing) — "by 3.5s he must be
+  past the threshold line, standing on the landing" is enforceable in a way
+  "he must be farther along" is not.
+- **A single "turn happens at Xs" instruction doesn't stop the turn from
+  leaking earlier.** Even with correct body-orientation logic (see step 2)
+  and an explicit single-turn timing rule, a character drifted into a
+  side-profile pose a full 2 seconds before the scripted turn, blurring out
+  the exact beat (a back-first door push) the timing was meant to protect.
+  Fix: pair the "turns once, at Xs" rule with an explicit negative
+  constraint repeated at every beat before that point — "at 1s, at 2s: he
+  must be fully front-facing, never profile or 3/4 angle" — not just a
+  single statement of when the turn is allowed to happen.
 
 ## Verifying a generated video
 
