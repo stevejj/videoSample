@@ -221,6 +221,7 @@ logos, no watermark.
 > **첨부**: 캐릭터 참조 이미지 + 확정된 시작 프레임(v4) + 확정된 끝 프레임(v16), 총 3장, 이 순서로.
 > **v1 결과 확인**: 0~4초 흐름은 좋았음. **v2 수정**: 5초에 오른쪽으로 이동하는 게 안 보이고 중앙에 그대로 있었음 → 5초부터 오른쪽으로 각도를 틀며 이동하는 것으로 수정. 6초는 몸이 절반 이상 가려져야 하는데 명시가 부족했음 → "MORE THAN HALF hidden"으로 명시.
 > **v3 수정(사용자 요청)**: 5·6·7초가 각각 따로 노는 게 아니라 **하나의 자연스럽게 이어지는 퇴장 동작**으로 읽혀야 함 → 세 컷 사이 전환이 매끄럽게 이어지도록 명시하는 문단 추가.
+> **v4 결과 확인(사용자)**: 0~4초는 아주 좋음. 문제 4가지 발견: (1) 2초에 "crack open"(관용구, 문이 빠끔 열리다)을 모델이 문자 그대로 "금이 가다"로 해석해서 문 표면에 균열 텍스처 생김 → "crack" 단어 자체를 빼고 서술. (2) 5초에 뒷모습 유지가 안 되고 갑자기 다시 정면을 봄 → 예전 영상에서도 봤던 패턴("뒷모습 유지"를 매 컷마다 다시 명시 안 하면 리셋됨), 4~6초 각각에 "seen from BEHIND, face NOT visible"을 반복 명시. (3) 3~6초에 소품이 사라짐 → 각 컷에 소품 유지를 반복 명시. (4) 6초에 문이 이미 거의 다 닫혀버림(사용자는 "거의 다 나간 상태"를 원함, 문 닫힘은 아직 아님) → 문이 완전히 닫히는 건 7초에만 일어나도록 타이밍 조정.
 
 ```
 Using the three reference images — the first is Chang-su's character
@@ -248,30 +249,42 @@ show a plausible, smoothly progressing sequence of this motion:
 - 0s: Chang-su faces the camera, holding the recycling load, door closed.
 - 1s: he has turned around, back now facing the camera, leaning into the
   door and beginning to push it with his back.
-- 2s: mid-struggle — leaning hard, legs pushing off the floor, the door
-  just starting to crack open under the pressure.
-- 3s: the door has swung open; he is stepping through the threshold.
-- 4s: he is partway through the doorway, walking forward, back still to
-  camera.
-- 5s: he has moved out onto the landing and is now clearly angling toward
-  screen-RIGHT, positioned noticeably off-center toward the right side of
-  the frame, walking away at an angle rather than straight ahead.
-- 6s: he is exiting the frame on the right side — MORE THAN HALF of his
-  body is already hidden/cropped off by the right edge of the frame, only
-  a small portion still visible; the door is just beginning to swing shut
-  on its own.
-- 7s: he is completely gone from frame; the door is fully closed, matching
-  the end reference image.
+- 2s: mid-struggle — leaning hard, legs pushing off the floor. The door has
+  begun swinging open a little way under the pressure — a narrow gap of
+  bright light shows at its edge. The door itself is completely undamaged
+  and unmarked, simply opening on its hinge like normal; it must NOT show
+  any cracks, fractures, or damage of any kind.
+- 3s: the door has swung open further; he is stepping through the
+  threshold. Still seen from BEHIND, face NOT visible. He is still
+  carrying the exact same two items as before (the cardboard-and-cans
+  bundle and the PET bottle bag) — they must still be visible in his wings.
+- 4s: he is partway through the doorway, walking forward. Still seen from
+  BEHIND, face NOT visible. Still carrying the same two items, clearly
+  visible in his wings.
+- 5s: Still seen from BEHIND — his face is NOT visible, his back is still
+  fully to the camera (do not let him face camera again). He has now
+  stepped all the way through the open doorway and is outside on the
+  landing, continuing to walk with his path curving toward screen-RIGHT,
+  positioned off-center toward the right side of the frame. Still carrying
+  the same two items.
+- 6s: Still seen from BEHIND, face NOT visible. He is almost completely
+  exited — MORE THAN HALF of his body is already cropped off by the right
+  edge of the frame, only a small portion (part of his back/head) still
+  visible, still carrying what's visible of the two items. The door is
+  STILL OPEN at this point — it has not started closing yet.
+- 7s: he is completely gone from frame — no part of him visible anywhere.
+  Only now does the door swing fully shut on its own, matching the end
+  reference image exactly.
 
-The 5s → 6s → 7s stretch is one single, continuous, natural exit — not
-three disconnected snapshots. Each of these panels must look like a direct,
-gradual continuation of the one before it: his position, stride, and how
-much of him is cropped by the frame edge should progress smoothly and
-believably from "clearly visible, angling right" (5s) through "partway
-occluded, still mid-stride" (6s) to "fully gone, door settled shut" (7s).
-Avoid any panel-to-panel jump that looks like a cut or a teleport — imagine
-this as flipping through consecutive frames of one real walk out the door,
-not picking three unrelated moments.
+The 3s → 4s → 5s → 6s → 7s stretch is one single, continuous, natural exit
+— not disconnected snapshots. Each panel must look like a direct, gradual
+continuation of the one before it: his position, stride, and how much of
+him is cropped by the frame edge should progress smoothly and believably.
+Avoid any panel-to-panel jump that looks like a cut or a teleport, and
+avoid any panel where he suddenly faces the camera again — once he turns
+at 1s, his back stays to the camera for every remaining panel until he is
+fully gone. Imagine this as flipping through consecutive frames of one
+real walk out the door, not picking unrelated moments.
 
 Camera position/framing, background, and character design must stay
 consistent across all 8 panels — this is one continuous scene, not 8
