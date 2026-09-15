@@ -18,10 +18,11 @@
 - [x] 시작/끝 프레임 프롬프트 초안 작성 + 자체 검증 통과
 - [x] 1차 시도 결과 시작/끝 프레임 배경 불일치 발견 → 끝 프레임을 "시작 프레임 이미지 기반 편집" 방식으로 수정 (배경 유지 확인됨)
 - [x] 외형 임의 변경 금지 / 의상 임의 추가 금지 제약 조건 추가 → v3로 재작성
-- [ ] 사용자가 Flow(나노바나나)에서 v3 프롬프트로 재생성 후 결과 확인
+- [x] v3 시작 프레임 결과 확인 → 눈썹이 생기고 눈 크기/모양 변형됨 (원인 추정: "furrowed brow" 표현이 눈썹으로 해석됨) → FACE LOCK 블록 추가, 해당 표현 제거 → v4로 재작성
+- [ ] 사용자가 Flow(나노바나나)에서 v4 프롬프트로 재생성 후 결과 확인
 - [ ] 영상 연결 프롬프트(Veo 3.1 Lite)는 이미지 결과 확인 후 결정
 
-## ① 시작 프레임 (나노바나나 프롬프트, v3)
+## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
 Using the uploaded reference image of the fluffy 3D pixar-style baby penguin
 character Paeng Chang-su (no accessory), generate a vertical 9:16 image.
@@ -38,24 +39,33 @@ mesh bag of aluminum cans hooked on top of the cardboard bundle. He leans
 slightly forward, torso tilted to counterbalance the load, one foot
 stepping toward the door.
 
-His expression is calm and natural — mild physical effort, a slightly
-furrowed brow, lips a bit pressed. NOT exaggerated or cartoonish, just an
-everyday determined look.
+His expression stays calm and natural, with only the mild physical effort
+of carrying a heavy load — subtle, NOT exaggerated or cartoonish.
 
 Camera: medium-full shot, eye-level, slight 3/4 angle toward the door.
 Soft, warm, realistic indoor lighting.
 
-STRICT CONSTRAINTS:
-- Do not alter Chang-su's physical appearance in any way. Keep his exact
-  body proportions, colors, fur texture, face shape, and features
-  identical to the reference image.
+FACE LOCK (highest priority, do not deviate):
+- The face must exactly match the reference image: large, round, wide-set
+  eyes that take up a big portion of the face, each with one bright round
+  catchlight, dark eye color, no visible pupils narrowing or squinting.
+- NO eyebrows of any kind. The character has smooth dark head fur directly
+  above the eyes with nothing resembling an eyebrow shape, line, or
+  furrow. Do not draw any brow markings.
+- Keep the exact same round head shape, face proportions, orange beak
+  shape and size, and fur coloring as the reference image. Do not narrow,
+  elongate, or reshape the eyes or face in any way.
+
+OTHER CONSTRAINTS:
+- Do not alter Chang-su's body proportions, colors, or fur texture from
+  the reference image.
 - Do not add any clothing, costume, accessories, or props on his body
   unless explicitly described above. He stays exactly as unclothed/bare as
   in the reference image — no shirt, no scarf, no hat, nothing extra.
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v3)
+## ② 끝 프레임 (나노바나나 프롬프트, v4)
 > **첨부**: 캐릭터 참조 이미지 + 방금 생성된 시작 프레임 이미지, 총 2장을 함께 참조로 첨부할 것 (배경 어긋남 방지).
 
 ```
@@ -70,14 +80,24 @@ on top of the cardboard bundle — nothing added, nothing dropped.
 
 His body is tilted a bit further off-balance than before, wobbling
 slightly to keep everything steady, but he is clearly managing it without
-anything slipping. His expression stays natural and understated — a touch
-of strain mixed with the beginning of relief. NOT exaggerated or
-cartoonish.
+anything slipping. His expression stays natural and understated, with a
+touch more visible effort than the start frame — subtle, NOT exaggerated
+or cartoonish.
 
-STRICT CONSTRAINTS:
-- Do not alter Chang-su's physical appearance in any way. Keep his exact
-  body proportions, colors, fur texture, face shape, and features
-  identical to the reference images.
+FACE LOCK (highest priority, do not deviate):
+- The face must exactly match the reference images: large, round,
+  wide-set eyes that take up a big portion of the face, each with one
+  bright round catchlight, dark eye color.
+- NO eyebrows of any kind. The character has smooth dark head fur directly
+  above the eyes with nothing resembling an eyebrow shape, line, or
+  furrow. Do not draw any brow markings.
+- Keep the exact same round head shape, face proportions, orange beak
+  shape and size, and fur coloring as the reference images. Do not narrow,
+  elongate, or reshape the eyes or face in any way.
+
+OTHER CONSTRAINTS:
+- Do not alter Chang-su's body proportions, colors, or fur texture from
+  the reference images.
 - Do not add any clothing, costume, accessories, or props on his body
   beyond the three recycling items already described. He stays exactly as
   unclothed/bare as in the reference images — no shirt, no scarf, no hat,
@@ -90,6 +110,11 @@ STRICT CONSTRAINTS:
 ---
 
 ## 히스토리 (참고용, 이전 버전)
+
+### v3 — 추상적 금지 문구("Do not alter appearance")만 사용 → 실패
+- 결과: 눈썹이 생기고 눈이 작아짐/좁아짐. "a slightly furrowed brow" 표현이 원인으로 추정(브로우=눈썹 연상).
+- 교훈: 추상적 금지보다 **구체적으로 없어야 할 것(NO eyebrows 등)과 정확한 비율/형태**를 명시하는 FACE LOCK 블록이 필요. "brow", "furrow" 등 눈썹을 연상시키는 단어는 표정 묘사에서 피할 것.
+- 전체 텍스트는 위 대화 기록 참고 (구조는 v4와 동일하되 FACE LOCK 블록 없음).
 
 ### v1 — 끝 프레임을 캐릭터 참조만으로 새로 생성 → 배경이 어긋남
 ```
