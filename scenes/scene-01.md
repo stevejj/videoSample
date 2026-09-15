@@ -213,9 +213,9 @@ proportions, and colors as the character reference image. No text, no
 logos, no watermark.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v4)
-> **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 걸어나가며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
-> **v3 → v4 변경 이유**: 끝 프레임 컨셉이 "밖에 서있는 모습"에서 "빈 현관+문 닫힘"으로 바뀌어서, 영상도 "문이 저절로 닫히며 캐릭터가 완전히 퇴장"하는 결말로 재작성. 문 위쪽에 원래 그려져 있던 도어클로저 장치(현관 이미지에 항상 있었음)를 활용해 "문이 자동으로 닫힌다"는 설정에 자연스러운 근거를 둠.
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v5)
+> **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 나가서 **오른쪽 방향으로 이동**하며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
+> **v4 → v5 변경 이유**: 사용자 요청으로 퇴장 방향을 **오른쪽**으로 명시.
 
 ```
 An 8-second continuous shot, camera completely static — no panning, no
@@ -231,20 +231,25 @@ use them to open the door.
 In one single continuous motion, with no pauses, no reversals, and no
 repeated actions: he turns around and backs into the door, pushing it
 open with his back/body since his wings are full, struggling under the
-weight. Once the door is open, he continues walking forward and out
-through the doorway, gradually moving farther away from the camera and
-out of frame. The door has a self-closing hinge mechanism (the visible
-door closer arm at the top of the frame) — once he is no longer holding
-it open and has walked far enough away, the door swings shut on its own,
-arriving fully closed by the end of the clip. By the final moment,
-Chang-su is no longer visible anywhere in the frame — he has fully
-exited, and the door has closed behind him, leaving the entryway empty.
+weight. Once the door is open, he continues walking forward through the
+doorway, then turns and heads toward screen-RIGHT, walking away along the
+outdoor landing/walkway toward the right side of the frame, gradually
+moving farther and farther to the right and out of frame. The door has a
+self-closing hinge mechanism (the visible door closer arm at the top of
+the frame) — once he is no longer holding it open and has walked far
+enough away, the door swings shut on its own, arriving fully closed by
+the end of the clip. By the final moment, Chang-su is no longer visible
+anywhere in the frame — he has fully exited toward the right, and the
+door has closed behind him, leaving the entryway empty.
 
 CRITICAL RULES (do not violate these):
 - The door opens once, pushed by his back, and stays open only while he
   is passing through it. Once he has moved far enough away, it must swing
   shut ON ITS OWN via the self-closing mechanism, naturally near the end
   of the clip — not an abrupt cut.
+- After passing through the doorway, he exits toward screen-RIGHT, not
+  straight ahead and not toward the left — his walking path curves to the
+  right and he leaves the frame on the right side.
 - Chang-su moves continuously away from camera for the entire clip once
   he starts walking. He must never stand still, walk in place, or move
   backward toward camera, and he must fully exit the frame by the end.
@@ -267,6 +272,8 @@ fading as he walks away, and a soft door-closer click/thud as the door
 swings shut on its own near the end. NO dialogue, NO voiceover, NO
 on-screen text or captions.
 ```
+
+### v4 (참고용, 퇴장 방향 미지정 — 실제 테스트 전에 방향 추가 요청으로 v5 작성)
 
 ### v3 (참고용, 끝 프레임 컨셉이 바뀌어서 폐기 — 실제 테스트도 안 됨)
 ```
