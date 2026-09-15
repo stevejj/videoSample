@@ -43,7 +43,9 @@
 - [x] v5 영상 결과를 2fps로 프레임 분석 → 심각한 렌더링 붕괴 다수 발견. 처음엔 "단계가 너무 많다"고 판단했으나, 사용자 지적으로 재검토하여 **구체적 원인 3가지**를 찾음: (1) "turns toward screen-RIGHT"의 "turns"가 몸 재회전으로 오독됨, (2) 문이 열린 상태의 참조 이미지가 없어서 디자인이 매번 다르게 그려짐, (3) 문 닫힘 타이밍이 캐릭터 퇴장과 연동 안 됨. 세 가지 다 교정하여 v6 재작성.
 - [x] v6 시도 전, 사용자가 두 가지 추가 지적: 문이 바깥쪽으로 열려야 함(안쪽으로 열리는 것처럼 보임), 문 밖 풍경에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 바깥으로 열리고, 문 밖은 순수 야외 배경만 보이도록 명시하는 v7 재작성
 - [x] v7 시도 전, 사용자가 "등으로 힘겹게 밀어서 여는 것"이 씬의 핵심 포인트인데 다른 규칙들 사이에 묻혔다고 지적 → 이 동작을 프롬프트 최상단에 "MOST IMPORTANT MOMENT"로 분리하고 구체적 신체 동작으로 생생하게 묘사하는 v8 재작성
-- [ ] 영상을 v8 프롬프트로 재생성 후 결과 확인
+- [x] v8 실제 테스트 전, 스토리보드 그리드(나노바나나, 무료)로 먼저 동작을 검증하기로 방향 전환 → 그리드 v1~v5 반복하며 0~7초 전 구간 확정 (관용구 회피, 매초 제약 반복+요약 규칙, 긍정+부정 제약 페어 등 교훈 발견 및 스킬에 반영)
+- [x] 확정된 스토리보드 그리드의 초 단위 내용을 그대로 옮겨서 영상 프롬프트 v9 작성
+- [ ] 영상을 v9 프롬프트로 재생성 후 결과 확인
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
 ```
@@ -294,7 +296,8 @@ don't blend together.
 No other text, logos, or watermarks besides the second-number labels.
 ```
 
-## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v8)
+## ③ 영상 연결 프롬프트 (Veo 3.1 Lite, v9)
+> **v8 → v9 변경 이유**: 확정된 스토리보드 그리드(나노바나나, 8컷)가 나왔으니, 동작을 처음부터 다시 구상하지 않고 **그리드의 초 단위 내용을 그대로 옮겨서** 작성. 그리드에서 검증된 교훈(관용구 금지, 매 비트마다 "뒷모습 유지"·"소품 유지" 반복 + 마지막에 요약 규칙, 긍정 서술+부정 제약 페어)도 영상 프롬프트에 동일하게 적용.
 > **v7 → v8 변경 이유(사용자 지적)**: "등으로 문을 힘겹게 밀어서 여는 것"이 이 씬의 핵심 포인트인데, CRITICAL RULES 등 다른 세부 규칙들 사이에 묻혀서 강조가 부족했음 → 이 동작을 프롬프트 최상단에 **가장 중요한 순간(MOST IMPORTANT MOMENT)**으로 분리해서 구체적인 신체 동작(온 몸을 뒤로 기대어 밀기, 다리로 바닥을 밀어내기, 문이 살짝 버티다가 밀려 열림 등)으로 생생하게 묘사.
 > **v6 → v7 변경 이유(사용자 지적)**: 문이 바깥쪽으로 열려야 하는데 그렇지 않았고, 문 열렸을 때 바깥 풍경 안에 "문처럼 생긴 구조물"이 또 보여서 어색함 → 문이 확실히 바깥 방향으로 열리고, 문 밖은 순수한 야외 배경(하늘/바닥/난간/나무 등)만 보이도록 명시.
 > **컨셉**: 정면으로 서있다가 → 뒤돌아 **등으로 문을 힘겹게 밀어서 열고** → 문밖으로 나가서 **오른쪽 방향으로 이동**하며 화면에서 점점 멀어짐 → **도어클로저(자동 닫힘 장치)로 문이 저절로 닫힘** → 마지막엔 캐릭터 없는 빈 현관+문 닫힘(끝 프레임 v16과 매칭). 카메라 완전 고정, 대사/텍스트 없음, 잔잔한 배경음악 + 효과음만.
@@ -317,36 +320,48 @@ No other text, logos, or watermarks besides the second-number labels.
 ```
 An 8-second continuous shot, camera completely static — no panning, no
 zooming, no cuts — fixed in the entryway of an ordinary home, facing the
-front door.
+front door. This is the exact motion depicted in the confirmed 8-panel
+storyboard grid (0s-7s) — follow it second by second:
 
-Chang-su, a small fluffy 3D-pixar-style penguin character, starts facing
-the camera, holding a heavy load of recycling: a tied cardboard bundle
-with a mesh bag of cans hooked to it in one wing-flipper, a clear bag of
-PET bottles in the other. Both wings are completely full, so he cannot
-use them to open the door.
+- 0s: Chang-su faces the camera, holding a heavy load of recycling (a tied
+  cardboard bundle with a mesh bag of cans hooked to it in one
+  wing-flipper, a clear bag of PET bottles in the other). Door closed.
+- 1s (MOST IMPORTANT MOMENT begins — give this real weight and screen
+  time, do not rush it): he turns around once so his back fully faces the
+  camera, leans his whole body weight backward, and begins pushing against
+  the door with his back, straining hard.
+- 2s: still mid-struggle — legs pushing against the floor for leverage,
+  body visibly trembling with effort. The door has begun swinging open a
+  little way under the pressure, a narrow gap of bright light showing at
+  its edge. The door itself is completely undamaged and unmarked, simply
+  opening on its hinge like normal — it must NOT show any cracks,
+  fractures, or damage of any kind.
+- 3s: the door has swung open further; he is stepping through the
+  threshold. Still seen from BEHIND, face NOT visible. Still carrying the
+  exact same two items, clearly visible in his wings.
+- 4s: he is partway through the doorway, walking forward. Still seen from
+  BEHIND, face NOT visible, still carrying the same two items.
+- 5s: Still seen from BEHIND, back fully to camera. He has stepped all the
+  way through the open doorway and is outside on the landing, continuing
+  to walk with his path curving toward screen-RIGHT, positioned off-center
+  toward the right side of the frame. Still carrying the same two items.
+- 6s: Still seen from BEHIND, face NOT visible. He is almost completely
+  exited — MORE THAN HALF of his body is already cropped off by the right
+  edge of the frame, only a small portion still visible. The door is
+  STILL OPEN at this point — it has not started closing yet.
+- 7s: he is completely gone from frame — no part of him visible anywhere.
+  Only now does the door's self-closing hinge mechanism swing it fully
+  shut on its own, arriving closed by the very end of the clip.
 
-MOST IMPORTANT MOMENT (this is the emotional core of the clip — give it
-real weight and screen time, do not rush through it): He turns around so
-his back faces the door, then leans his whole body weight backward and
-pushes against the door with his back, straining hard. His stubby legs
-push against the floor for leverage, his body visibly trembling with
-effort. The door resists for a moment — it does not fly open instantly —
-before finally giving way and swinging open under his sustained push.
-This is a genuine struggle, not a quick or easy motion: he is visibly
-working hard, fighting the weight of his load and the door together.
-
-Once the door has swung open, he continues walking forward through the
-doorway and out. Without rotating his body or facing the camera again at
-any point, he simply angles his walking path so that he moves toward
-screen-RIGHT while still walking with his back to the camera the entire
-time — think of it as steering while walking, not turning around. He
-keeps moving away from camera and toward screen-right until he is
-completely gone from the frame.
+The 3s → 4s → 5s → 6s → 7s stretch is one single, continuous, natural
+exit, not disconnected moments — his position, stride, and how much of
+him is cropped by the frame edge should progress smoothly and believably,
+like consecutive frames of one real walk out the door.
 
 The door itself — the same solid brown wooden door with the same silver
 lever handle and door-closer arm hardware seen in the reference images —
-stays visually consistent throughout, whether closed, opening, or open.
-It does not change color, material, or hardware design at any point. The
+stays visually consistent throughout, whether closed, opening, or open. It
+does not change color, material, or hardware design at any point. The
 door swings OUTWARD, away from the camera and away from the interior, out
 into the exterior space — not inward toward the camera or into the room.
 
@@ -356,36 +371,31 @@ neighboring building in the distance. There must be NO other door, gate,
 screen door, or any door-like structure of any kind visible in the
 exterior — just a normal outdoor space.
 
-Only after Chang-su has fully and completely left the frame (he must be
-100% out of view first) does the door's self-closing hinge mechanism
-begin to swing it shut on its own, arriving fully closed by the very end
-of the clip. The door closing must not begin while any part of Chang-su
-is still visible.
-
 CRITICAL RULES (do not violate these):
-- The door-push struggle is the most important beat of this clip — it
-  must be clearly visible, unhurried, and take real time (roughly 2-3
-  seconds of the 8-second clip). Do not skip, rush, or shorten it.
-- Chang-su turns his body only ONCE, near the beginning, to face away
-  from camera. After that single turn, he must NEVER face the camera
-  again and must NEVER rotate his body for the rest of the clip — only
-  his walking path curves toward screen-RIGHT, his back stays to the
-  camera throughout.
+- The door-push struggle (1s-2s) is the most important beat of this clip —
+  it must be clearly visible and unhurried. Do not skip, rush, or shorten
+  it.
+- Chang-su turns his body only ONCE, at 1s, to face away from camera.
+  After that single turn, he must NEVER face the camera again and must
+  NEVER rotate his body for the rest of the clip, all the way through 7s —
+  only his walking path curves toward screen-RIGHT, his back stays to the
+  camera throughout every remaining second.
 - The door's appearance (color, material, handle, closer hardware) stays
-  perfectly consistent throughout the entire clip — it is always the same
-  door as in the reference images, never a different design.
+  perfectly consistent throughout — always the same door as in the
+  reference images, never a different design, and never showing cracks or
+  damage.
 - The door swings outward (away from camera, into the exterior), never
   inward toward the camera.
 - The exterior beyond the doorway is plain outdoor scenery only — no
   additional doors or door-like structures anywhere in the background.
-- The door does not start closing until Chang-su has completely exited
-  the frame. Character-exit happens first, door-closing happens second —
-  these must not overlap.
-- Chang-su moves continuously away from camera for the entire clip once
-  he starts walking. He must never stand still, walk in place, or move
-  backward toward camera.
-- The two items he carries stay solid and continuously visible while he
-  is on screen. They must not flicker, disappear, or change shape.
+- The door does not start closing until Chang-su has completely exited the
+  frame (see 6s vs 7s above) — character-exit happens first, door-closing
+  happens second, these must not overlap.
+- Chang-su moves continuously away from camera for the entire clip once he
+  starts walking (3s onward). He must never stand still, walk in place, or
+  move backward toward camera.
+- The two items he carries stay solid and continuously visible while he is
+  on screen. They must not flicker, disappear, or change shape.
 - Do not repeat, loop, hesitate, or reverse any part of the motion.
 
 His body leans/wobbles slightly side to side as he walks, working to keep
@@ -401,6 +411,9 @@ fading as he walks away, and a soft door-closer click/thud as the door
 swings shut on its own near the end. NO dialogue, NO voiceover, NO
 on-screen text or captions.
 ```
+
+### v8 (참고용, 스토리보드 그리드 확정 전 독자적으로 구상한 버전)
+- v7의 "MOST IMPORTANT MOMENT" 구조는 잘 작동해서 v9에서도 유지. 다만 동작을 처음부터 다시 구상했었는데, 이후 스토리보드 그리드로 검증된 초 단위 내용이 나와서 v9는 그걸 그대로 옮겨씀. 아직 실제 영상으로 테스트되지 않음.
 
 ### v5 (참고용, 렌더링 붕괴로 재작성) — 문 디자인 변경/캐릭터 재정면화/문-퇴장 논리 붕괴
 - 결과는 위 v6 항목 상단의 "v5 영상 결과 분석" 참고. 원인 3가지(turn 단어 오독, 열린 문 레퍼런스 부재, 퇴장-닫힘 타이밍 미연동)를 찾아 v6로 수정.
