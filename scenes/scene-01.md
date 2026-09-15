@@ -30,7 +30,8 @@
 - [x] 영상 연결 프롬프트(Veo 3.1 Lite) 컨셉 제안 → 사용자 승인(BGM 잔잔 + 효과음만, 대사/텍스트 없음) → v1 프롬프트 작성 완료
 - [x] v1 영상 결과를 2fps로 프레임 분석 → 문 열림/닫힘 반복, 제자리걸음(실제 이동 없음), 소품(종이박스) 깜빡임 3가지 문제 발견 → "절대 하면 안 되는 것"을 명시하는 CRITICAL RULES 추가해 v2로 재작성
 - [x] 사용자 피드백: 끝 프레임(v9)이 "문턱 근처"까지만이라 도착점이 약해서 영상이 끝까지 자연스럽게 안 이어짐 → 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 v10 재작성
-- [ ] 끝 프레임을 v10 프롬프트로 재생성 후 결과 확인
+- [x] v10 시도 전, 사용자가 v9(=v10의 베이스) 자체의 물리 오류를 지적: 뒤돌았는데 소품 좌우가 정면일 때와 동일하게 유지됨(180도 회전이면 좌우가 바뀌어야 함) → 좌우 교정 지시를 추가해 v11로 재작성. v10은 시도하지 않고 폐기.
+- [ ] 끝 프레임을 v11 프롬프트로 재생성 후 결과 확인
 - [ ] **끝 프레임이 v10으로 바뀌면 영상 연결 프롬프트도 재조정 필요** (v2는 "문턱에서 멈춤"이 도착점이었는데, v10은 "완전히 바깥으로 나감"이 도착점이므로 이에 맞게 다시 써야 함)
 
 ## ① 시작 프레임 (나노바나나 프롬프트, v4)
@@ -76,30 +77,35 @@ OTHER CONSTRAINTS:
 - No text, no logos, no watermark.
 ```
 
-## ② 끝 프레임 (나노바나나 프롬프트, v10)
-> **v9 결과 자체는 반영됐으나(뒷모습, 문 열림) "문턱 근처" 정도라 도착점이 약함** — 영상 생성 시 8초 안에 애매하게 조금만 이동하고 마는 문제(문 열림/닫힘 반복, 제자리걸음)로 이어짐. 끝 프레임을 **완전히 문 밖으로 나가 바깥에 선 모습**으로 더 명확한 도착점으로 재작성. 뒷모습 유지라 FACE LOCK 불필요.
+## ② 끝 프레임 (나노바나나 프롬프트, v11)
+> **v9/v10에서 발견된 물리 오류(사용자 지적)**: 정면일 때 화면 기준 왼쪽=종이박스+캔, 오른쪽=페트병이었는데, 뒤돌았는데도 나노바나나가 화면상 좌우를 그대로 복사해버림. 180도 회전하면 카메라 기준 좌우가 뒤바뀌는 게 물리적으로 맞음(오른쪽 날개 소품 → 뒤돌면 화면 오른쪽, 왼쪽 날개 소품 → 화면 왼쪽). v11은 이 좌우 교정을 명시적으로 지정.
 > **첨부**: 캐릭터 참조 이미지 + v9 결과물(뒷모습, 문턱 근처 이미지)을 베이스로 사용
 
 ```
-Using the second reference image (the confirmed v9 photo) as the base for
-character identity, colors, and the room/door style — but this is a new
-photograph capturing a moment slightly later: Chang-su has now walked all
-the way through the doorway and is standing outside, past the threshold,
-on the outdoor landing/walkway.
+Using the second reference image (the v9 photo) as the base for character
+identity, colors, and the room/door style — but this is a new photograph
+with two corrections applied, capturing a moment slightly later.
 
-REQUIRED CHANGE (must be clear and unmistakable): He is now fully outside
-the house — both feet past the door threshold, standing on the outdoor
-landing beyond it. Because he is now framed by the doorway itself and a
-little farther from camera, he appears somewhat smaller in the frame than
-in the base image, with more of the door frame and interior wall visible
-around him, and more of the outdoor scenery (sky, railing, neighboring
-building) visible beyond/around him.
+CORRECTION — ITEM SIDES (important, the base image has this wrong): When
+Chang-su was facing the camera, the cardboard-and-cans bundle was on
+screen-LEFT and the PET bottle bag was on screen-RIGHT. Since he has
+turned 180 degrees to face away from camera, the screen sides must swap:
+the cardboard-and-cans bundle must now appear on screen-RIGHT, and the
+PET bottle bag must now appear on screen-LEFT. (The base image incorrectly
+kept them on the same screen sides as the front view — fix this.)
+
+REQUIRED CHANGE — FURTHER OUTSIDE (must be clear and unmistakable): He is
+now fully outside the house — both feet past the door threshold, standing
+on the outdoor landing beyond it. Because he is now framed by the doorway
+itself and a little farther from camera, he appears somewhat smaller in
+the frame than in the base image, with more of the door frame and
+interior wall visible around him, and more of the outdoor scenery (sky,
+railing, neighboring building) visible beyond/around him.
 
 Still seen from BEHIND — the back of his round head (dark navy-gray fur,
-no face visible), his back and rounded body, short legs. Still carrying
-the exact same two items in the same relative arrangement: the tied
-cardboard bundle with the mesh bag of cans hooked to it on one side, the
-clear bag of PET bottles on the other side — nothing added or dropped.
+no face visible), his back and rounded body, short legs. Still the exact
+same two items (just with corrected screen sides as specified above) —
+nothing added or dropped.
 
 His body is upright and steady now, no more wobble — he has successfully
 made it outside without dropping anything. A settled, composed stance,
